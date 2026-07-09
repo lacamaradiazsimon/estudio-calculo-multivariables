@@ -1,0 +1,1391 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=5.0">
+<meta name="theme-color" content="#0f1220">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Cálculo Multivariables — Examen</title>
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(','\\)']], displayMath: [['\\[','\\]']] },
+  svg: { fontCache: 'global', scale: 1.0 },
+  options: { enableMenu: false },
+  startup: {
+    typeset: false,
+    ready: () => {
+      window.MathJax.startup.defaultReady();
+      window.__mjReady = true;
+      if (window.__retypeset) window.__retypeset();
+    }
+  }
+};
+</script>
+<script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+<style>
+:root{
+  --bg:#0f1220; --bg2:#0b0e1a; --surf:#181c2e; --card:#1e2338; --card2:#232a42;
+  --txt:#e8eaf2; --muted:#9aa3bd; --accent:#6ea8fe; --accent2:#5ce2c0; --accent3:#c9a6ff;
+  --ok:#36d399; --bad:#fb7185; --warn:#fbbf24; --border:#2c3350; --shadow:rgba(0,0,0,.35);
+}
+html[data-theme="light"]{
+  --bg:#eef1f8; --bg2:#e3e8f4; --surf:#ffffff; --card:#ffffff; --card2:#f1f4fb;
+  --txt:#1b2138; --muted:#566080; --accent:#2f6bdd; --accent2:#0ea98a; --accent3:#7c4ddb;
+  --ok:#0f9d63; --bad:#d63a52; --warn:#b8780a; --border:#d4dbed; --shadow:rgba(30,40,80,.12);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;padding:0}
+body{
+  background:radial-gradient(1200px 800px at 80% -10%, rgba(110,168,254,.10), transparent 60%),
+             radial-gradient(900px 700px at -10% 110%, rgba(92,226,192,.08), transparent 55%),
+             var(--bg);
+  color:var(--txt);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  font-size:17px; line-height:1.62; -webkit-text-size-adjust:100%;
+  padding-bottom:env(safe-area-inset-bottom);
+}
+a{color:var(--accent)}
+/* ---------- Top bar ---------- */
+#topbar{
+  position:sticky; top:0; z-index:40;
+  display:flex; align-items:center; gap:10px;
+  padding:calc(10px + env(safe-area-inset-top)) 14px 10px;
+  background:color-mix(in srgb, var(--bg) 86%, transparent);
+  backdrop-filter:saturate(160%) blur(12px); -webkit-backdrop-filter:saturate(160%) blur(12px);
+  border-bottom:1px solid var(--border);
+}
+#menuBtn{
+  display:none; border:1px solid var(--border); background:var(--card);
+  color:var(--txt); width:42px; height:42px; border-radius:12px; font-size:20px; cursor:pointer;
+}
+#brand{font-weight:700; font-size:15px; letter-spacing:.2px; display:flex; align-items:center; gap:8px}
+#brand .dot{color:var(--accent2)}
+#brand small{color:var(--muted); font-weight:500}
+#topRight{margin-left:auto; display:flex; align-items:center; gap:10px}
+#themeBtn{border:1px solid var(--border); background:var(--card); color:var(--txt); width:42px;height:42px;border-radius:12px;font-size:18px;cursor:pointer}
+#progWrap{display:flex;align-items:center;gap:8px;min-width:90px}
+#progBar{flex:1;height:8px;background:var(--card2);border-radius:99px;overflow:hidden;min-width:60px}
+#progFill{height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .4s}
+#progTxt{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
+/* ---------- Layout ---------- */
+#layout{display:flex; max-width:1180px; margin:0 auto; gap:0}
+#sidebar{
+  width:286px; flex:none; padding:18px 14px 60px; position:sticky; top:64px; align-self:flex-start;
+  max-height:calc(100vh - 64px); overflow-y:auto;
+}
+#sidebar h3{font-size:11px;text-transform:uppercase;letter-spacing:1.4px;color:var(--muted);margin:6px 8px 10px}
+.navItem{
+  display:flex; align-items:center; gap:11px; padding:11px 12px; border-radius:13px; cursor:pointer;
+  color:var(--txt); border:1px solid transparent; margin-bottom:4px; transition:background .15s,border .15s;
+}
+.navItem:hover{background:var(--card)}
+.navItem.active{background:var(--card); border-color:var(--border)}
+.navItem .ic{font-size:20px; width:26px; text-align:center; flex:none}
+.navItem .nm{font-size:14px; font-weight:600; line-height:1.25}
+.navItem .nm small{display:block;color:var(--muted);font-weight:500;font-size:11.5px;margin-top:1px}
+.navItem .chk{margin-left:auto; color:var(--ok); font-size:15px; opacity:0; flex:none}
+.navItem.done .chk{opacity:1}
+.navItem.done .ic{opacity:.65}
+#scrim{display:none; position:fixed; inset:0; background:rgba(0,0,0,.5); z-index:35}
+/* ---------- Content ---------- */
+#main{flex:1; min-width:0; padding:22px 20px 120px}
+.mhead{margin:4px 0 20px}
+.mhead .kick{color:var(--accent2);font-weight:700;font-size:12.5px;letter-spacing:1.2px;text-transform:uppercase}
+.mhead h1{font-size:27px;line-height:1.2;margin:6px 0 4px}
+.mhead h1 .e{margin-right:8px}
+.mhead p{color:var(--muted);margin:0;font-size:16px}
+.section{margin:30px 0}
+.section > .stitle{
+  display:flex;align-items:center;gap:10px;font-size:13px;font-weight:700;letter-spacing:.8px;
+  text-transform:uppercase;color:var(--muted);margin:0 0 14px;
+}
+.section > .stitle::after{content:"";flex:1;height:1px;background:var(--border)}
+.card{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:18px 18px;box-shadow:0 8px 30px -18px var(--shadow);margin-bottom:14px}
+.para{margin:0 0 14px}
+.para:last-child{margin-bottom:0}
+.formula{
+  background:var(--card2);border:1px solid var(--border);border-radius:14px;padding:12px 14px;margin:14px 0;
+  overflow-x:auto; overflow-y:hidden; -webkit-overflow-scrolling:touch; text-align:center;
+}
+.formula .cap{display:block;color:var(--muted);font-size:13px;margin-top:6px;text-align:center}
+.callout{
+  border-left:4px solid var(--accent); background:linear-gradient(90deg, color-mix(in srgb,var(--accent) 12%, transparent), transparent 70%);
+  border-radius:10px;padding:12px 14px;margin:14px 0;
+}
+.callout::before{content:"💡 ";}
+strong{color:var(--txt);font-weight:700}
+code{background:var(--card2);border:1px solid var(--border);border-radius:6px;padding:1px 6px;font-size:.92em}
+/* ---------- Interactive bits ---------- */
+.btn{
+  appearance:none;border:1px solid var(--border);background:var(--card2);color:var(--txt);
+  border-radius:12px;padding:11px 15px;font-size:14.5px;font-weight:600;cursor:pointer;
+  min-height:44px; transition:background .15s,transform .05s; touch-action:manipulation;
+}
+.btn:active{transform:scale(.97)}
+.btn.primary{background:linear-gradient(180deg,var(--accent),#5b93ee);border-color:transparent;color:#08101f}
+.btn.ghost{background:transparent}
+.btn.sm{padding:8px 12px;font-size:13px;min-height:38px}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+/* steps (guided derivation + exercise) */
+.step{border:1px solid var(--border);border-radius:15px;padding:14px 15px;margin-bottom:12px;background:var(--card)}
+.step .qn{display:flex;gap:10px;align-items:flex-start}
+.step .badge{flex:none;width:27px;height:27px;border-radius:8px;background:var(--card2);border:1px solid var(--border);
+  display:grid;place-items:center;font-size:13px;font-weight:700;color:var(--accent2)}
+.step .prompt{font-weight:600;margin:0}
+.hintbox{margin-top:11px}
+.hint{background:var(--card2);border:1px dashed var(--border);border-radius:10px;padding:9px 12px;margin-top:8px;font-size:15px;color:var(--txt)}
+.hint .lab{color:var(--warn);font-weight:700;font-size:12px;letter-spacing:.5px;display:block;margin-bottom:2px}
+.reveal{margin-top:11px;border-top:1px dashed var(--border);padding-top:11px;display:none}
+.reveal.show{display:block;animation:fade .3s}
+.reveal .ans{background:color-mix(in srgb,var(--ok) 12%, transparent);border:1px solid color-mix(in srgb,var(--ok) 35%, var(--border));border-radius:11px;padding:10px 12px;margin-bottom:8px}
+.reveal .exp{color:var(--muted);font-size:15px}
+@keyframes fade{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+.finalans{margin-top:6px;background:color-mix(in srgb,var(--accent2) 12%, transparent);border:1px solid color-mix(in srgb,var(--accent2) 34%, var(--border));border-radius:12px;padding:11px 14px}
+.finalans .lab{color:var(--accent2);font-weight:700;font-size:12px;letter-spacing:.6px;display:block;margin-bottom:3px}
+/* quiz */
+.quiz{border:1px solid var(--border);border-radius:15px;padding:15px;margin-bottom:13px;background:var(--card)}
+.quiz .q{font-weight:600;margin:0 0 12px}
+.opt{display:flex;gap:10px;align-items:flex-start;border:1px solid var(--border);border-radius:12px;padding:11px 13px;margin-bottom:9px;cursor:pointer;background:var(--card2);transition:border .15s,background .15s}
+.opt:hover{border-color:var(--accent)}
+.opt .mk{flex:none;width:24px;height:24px;border-radius:50%;border:2px solid var(--muted);display:grid;place-items:center;font-size:13px;font-weight:700;margin-top:1px}
+.opt.correct{border-color:var(--ok);background:color-mix(in srgb,var(--ok) 12%,transparent)}
+.opt.correct .mk{border-color:var(--ok);background:var(--ok);color:#04130c}
+.opt.wrong{border-color:var(--bad);background:color-mix(in srgb,var(--bad) 12%,transparent)}
+.opt.wrong .mk{border-color:var(--bad);background:var(--bad);color:#1a0408}
+.opt.locked{cursor:default;opacity:.85}
+.opt.locked:hover{border-color:var(--border)}
+.opt.correct.locked,.opt.wrong.locked{opacity:1}
+.fb{font-size:14px;color:var(--muted);margin:2px 0 0;display:none}
+.opt.show-fb .fb{display:block}
+.qexp{margin-top:6px;background:var(--card2);border-radius:11px;padding:11px 13px;font-size:15px;display:none}
+.qexp.show{display:block}
+.qexp .lab{color:var(--accent);font-weight:700;font-size:12px;letter-spacing:.5px;display:block;margin-bottom:3px}
+/* takeaways */
+.takeaways{list-style:none;padding:0;margin:0}
+.takeaways li{position:relative;padding:9px 12px 9px 38px;background:var(--card);border:1px solid var(--border);border-radius:12px;margin-bottom:9px}
+.takeaways li::before{content:"⭐";position:absolute;left:12px;top:9px}
+/* widget shell */
+.widget{background:var(--card);border:1px solid var(--border);border-radius:18px;padding:14px;margin:6px 0 4px;overflow:hidden}
+.widget .whead{display:flex;align-items:center;gap:8px;font-weight:700;font-size:15px;margin:0 2px 10px}
+.widget .whead .tag{margin-left:auto;font-size:11px;color:var(--muted);font-weight:600;letter-spacing:.5px;text-transform:uppercase}
+.wcanvas{display:block;width:100%;border-radius:13px;background:var(--bg2);border:1px solid var(--border);touch-action:none}
+.wctrls{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:11px}
+.seg{display:inline-flex;border:1px solid var(--border);border-radius:11px;overflow:hidden;background:var(--card2)}
+.seg button{border:none;background:transparent;color:var(--muted);padding:9px 13px;font-size:13.5px;font-weight:600;cursor:pointer;min-height:40px}
+.seg button.on{background:var(--accent);color:#08101f}
+.field{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);flex-wrap:wrap}
+.field input[type=range]{accent-color:var(--accent);height:30px}
+.readout{font-variant-numeric:tabular-nums;background:var(--card2);border:1px solid var(--border);border-radius:11px;padding:9px 12px;font-size:14px;line-height:1.45}
+.readout b{color:var(--accent2)}
+.readout .big{font-size:20px;font-weight:800;color:var(--txt)}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);background:var(--card2);border:1px solid var(--border);border-radius:99px;padding:5px 10px}
+/* footer nav */
+.fnav{display:flex;gap:10px;margin-top:34px;padding-top:18px;border-top:1px solid var(--border)}
+.fnav .btn{flex:1;justify-content:center;display:flex;align-items:center;gap:7px}
+.markdone{width:100%;margin-top:14px}
+.bignote{color:var(--muted);font-size:13.5px;text-align:center;margin-top:26px}
+.bignote a{cursor:pointer}
+@media (max-width:860px){
+  body{font-size:16px}
+  #menuBtn{display:block}
+  #sidebar{
+    position:fixed; top:0; left:0; bottom:0; width:300px; max-width:86vw; z-index:36;
+    background:var(--surf); transform:translateX(-104%); transition:transform .26s ease;
+    padding-top:calc(18px + env(safe-area-inset-top)); max-height:none; box-shadow:0 0 40px var(--shadow);
+  }
+  #sidebar.open{transform:none}
+  #scrim.open{display:block}
+  #main{padding:18px 15px 120px}
+  .mhead h1{font-size:23px}
+  #brand small{display:none}
+  #progWrap{min-width:64px}
+}
+@media (max-width:420px){
+  .mhead h1{font-size:21px}
+  .card,.widget{border-radius:15px}
+}
+</style>
+</head>
+<body>
+<div id="topbar">
+  <button id="menuBtn" aria-label="Menú">☰</button>
+  <div id="brand">📘 <span>Cálculo Multivariables</span> <small>Examen final</small></div>
+  <div id="topRight">
+    <div id="progWrap" title="Progreso">
+      <div id="progBar"><div id="progFill"></div></div>
+      <span id="progTxt">0%</span>
+    </div>
+    <button id="themeBtn" aria-label="Tema">🌙</button>
+  </div>
+</div>
+<div id="scrim"></div>
+<div id="layout">
+  <aside id="sidebar">
+    <h3>Módulos</h3>
+    <div id="navList"></div>
+    <div class="bignote">Toca un módulo para empezar.<br>Tu progreso se guarda en este dispositivo.</div>
+  </aside>
+  <main id="main">
+    <div id="content"><!-- render --></div>
+  </main>
+</div>
+
+<script id="data">window.MODULES_DATA = [
+{
+  id: "apuntes", icon: "🎯", title: "Apuntes", widget: "none",
+  subtitle: "Todas las fórmulas del semestre en una pantalla",
+  theory: [
+    { type: "para", content: "**1 · Límites y continuidad (Clases 1–6)**" },
+    { type: "para", content: "**No existe** si dos trayectorias dan límites distintos (unicidad). En polares \\(x=a+r\\cos\\theta,\\ y=b+r\\operatorname{sen}\\theta\\): si el resultado **depende de \\(\\theta\\)**, no existe; si \\(f=H(r)\\,G(\\theta)\\) con \\(H(r)\\to 0\\) y \\(G\\) **acotada**, el límite es \\(0\\). También sirve **acotamiento** (sandwich)." },
+    { type: "para", content: "**Continuidad en \\(\\vec x_0\\):** \\(\\lim_{\\vec x\\to\\vec x_0} f(\\vec x)=f(\\vec x_0)\\). Álgebra de continuas: suma, producto, cociente (denominador \\(\\neq 0\\)) y composición." },
+    { type: "para", content: "**2 · Diferenciabilidad y plano tangente (Clases 7–11)**" },
+    { type: "formula", content: "z=f(a,b)+\\frac{\\partial f}{\\partial x}(a,b)(x-a)+\\frac{\\partial f}{\\partial y}(a,b)(y-b)", caption: "Plano tangente a \\(z=f(x,y)\\) en \\((a,b)\\); el lado derecho es la aproximación lineal \\(L(x,y)\\)." },
+    { type: "para", content: "**Cadena de implicaciones:** parciales continuas en una vecindad \\(\\Rightarrow\\) diferenciable \\(\\Rightarrow\\) continua (y existen las parciales). Los recíprocos son **falsos**." },
+    { type: "formula", content: "\\frac{\\partial f}{\\partial x}=\\frac{\\partial f}{\\partial u}\\frac{\\partial u}{\\partial x}+\\frac{\\partial f}{\\partial v}\\frac{\\partial v}{\\partial x}", caption: "Regla de la cadena, \\(f=f(u,v)\\), \\(u=u(x,y)\\), \\(v=v(x,y)\\) (análoga en \\(y\\))." },
+    { type: "formula", content: "D_{\\vec u}f(\\vec a)=\\nabla f(\\vec a)\\cdot\\vec u,\\qquad \\max_{\\vec u}\\,D_{\\vec u}f(\\vec a)=\\lVert\\nabla f(\\vec a)\\rVert", caption: "\\(\\vec u\\) **SIEMPRE unitario**. Máximo en la dirección de \\(\\nabla f\\); mínimo \\(-\\lVert\\nabla f\\rVert\\) en \\(-\\nabla f\\)." },
+    { type: "formula", content: "\\Pi:\\ \\nabla F(a,b,c)\\cdot(x-a,\\ y-b,\\ z-c)=0,\\qquad f_x=-\\frac{F_x}{F_z}", caption: "Superficie de nivel \\(F=0\\): \\(\\nabla F\\) es normal. Función implícita \\(z=f(x,y)\\): requiere \\(F_z\\neq 0\\)." },
+    { type: "para", content: "**3 · Optimización (Clases 12–13)**" },
+    { type: "formula", content: "D=f_{xx}f_{yy}-f_{xy}^2:\\quad D\\gt 0,\\ f_{xx}\\gt 0\\Rightarrow\\text{mín};\\quad D\\gt 0,\\ f_{xx}\\lt 0\\Rightarrow\\text{máx};\\quad D\\lt 0\\Rightarrow\\text{silla}", caption: "Criterio del Hessiano en el punto crítico (\\(\\nabla f=\\vec 0\\)). En \\(n\\) variables: subdeterminantes principales." },
+    { type: "formula", content: "\\nabla f(\\vec x_0)=\\lambda\\,\\nabla g(\\vec x_0),\\qquad g(\\vec x_0)=0", caption: "Multiplicadores de Lagrange (\\(f,g\\) de clase \\(\\mathcal{C}^1\\), \\(\\nabla g\\neq\\vec 0\\)). El sistema casi siempre **bifurca en casos**." },
+    { type: "callout", content: "**Weierstrass:** \\(f\\) continua sobre \\(D\\) **cerrado y acotado** alcanza máximo y mínimo absolutos. Cítalo SIEMPRE para justificar que los extremos existen. Sobre un compacto: candidatos = críticos del interior + análisis de la frontera (+ vértices)." },
+    { type: "para", content: "**4 · Integrales dobles (Clases 14–16)**" },
+    { type: "formula", content: "\\iint_D f\\,dA=\\int_a^b\\!\\!\\int_{g_1(x)}^{g_2(x)} f\\,dy\\,dx \\ \\ (\\text{tipo I});\\qquad \\int_c^d\\!\\!\\int_{h_1(y)}^{h_2(y)} f\\,dx\\,dy \\ \\ (\\text{tipo II})", caption: "Fubini: sobre un rectángulo el orden da igual. Para cambiar el orden: **redibuja la región**." },
+    { type: "formula", content: "\\iint_D f\\,dA=\\iint_{D^*} f\\,\\left|\\frac{\\partial(x,y)}{\\partial(u,v)}\\right|\\,du\\,dv,\\qquad \\frac{\\partial(x,y)}{\\partial(u,v)}=\\frac{1}{\\ \\partial(u,v)/\\partial(x,y)\\ }", caption: "Cambio de variables (\\(T\\in\\mathcal{C}^1\\), inyectiva). El truco del recíproco evita despejar \\(x,y\\)." },
+    { type: "formula", content: "dA=r\\,dr\\,d\\theta", caption: "Polares: \\(x=r\\cos\\theta,\\ y=r\\operatorname{sen}\\theta\\); jacobiano \\(=r\\). ¡No lo olvides!" },
+    { type: "para", content: "**5 · Integrales triples (Clases 17–19)**" },
+    { type: "formula", content: "\\text{Cilíndricas: } dV=r\\,dz\\,dr\\,d\\theta\\qquad\\qquad \\text{Volumen}(D)=\\iiint_D 1\\,dV" },
+    { type: "formula", content: "x=\\rho\\cos\\theta\\operatorname{sen}\\varphi,\\quad y=\\rho\\operatorname{sen}\\theta\\operatorname{sen}\\varphi,\\quad z=\\rho\\cos\\varphi,\\qquad dV=\\rho^2\\operatorname{sen}\\varphi\\;d\\rho\\,d\\varphi\\,d\\theta", caption: "Esféricas (convención del curso): \\(\\theta\\) azimutal como en cilíndricas (\\(0\\le\\theta\\lt 2\\pi\\)), \\(\\varphi\\) desde el eje \\(z\\) (\\(0\\le\\varphi\\le\\pi\\))." },
+    { type: "callout", content: "Clásicos del examen: esfera \\(x^2+y^2+z^2=4z\\ \\Rightarrow\\ \\rho=4\\cos\\varphi\\); cono \\(z=\\sqrt{x^2+y^2}\\ \\Rightarrow\\ \\varphi=\\pi/4\\); esfera \\(x^2+y^2+z^2=a^2\\Rightarrow\\rho=a\\). Simetría axial → cilíndricas; simetría esférica/conos → esféricas." },
+    { type: "para", content: "**6 · Curvas y campos (Clases 20–22)**" },
+    { type: "formula", content: "\\int_\\gamma f\\,ds=\\int_a^b f(\\vec r(t))\\,\\lVert\\vec r\\,'(t)\\rVert\\,dt,\\qquad l(\\gamma)=\\int_a^b\\lVert\\vec r\\,'(t)\\rVert\\,dt", caption: "Integral de trayectoria (campo escalar): masa de un alambre si \\(f=\\delta\\). No depende de la orientación." },
+    { type: "formula", content: "\\int_\\gamma \\vec F\\cdot d\\vec r=\\int_a^b \\vec F(\\vec r(t))\\cdot\\vec r\\,'(t)\\,dt=\\int_\\gamma P\\,dx+Q\\,dy+R\\,dz", caption: "Integral de línea (trabajo). Cambia de **signo** al invertir la orientación." },
+    { type: "formula", content: "\\vec F=\\nabla f\\ \\Longrightarrow\\ \\int_\\gamma\\vec F\\cdot d\\vec r=f(B)-f(A)", caption: "Teorema Fundamental (TFIL). Conservativo en 2D: \\(P_y=Q_x\\) en región **simplemente conexa**; en \\(\\mathbb{R}^3\\): \\(\\operatorname{rot}\\vec F=\\vec 0\\)." },
+    { type: "para", content: "**7 · Green, Stokes y Gauss (Clases 22–23)**" },
+    { type: "formula", content: "\\oint_{\\gamma^+} P\\,dx+Q\\,dy=\\iint_D\\left(\\frac{\\partial Q}{\\partial x}-\\frac{\\partial P}{\\partial y}\\right)dA", caption: "Green: \\(\\gamma\\) cerrada, simple, suave a trozos, orientación **antihoraria**; \\(P,Q\\) con parciales continuas en un abierto que contiene a \\(D\\)." },
+    { type: "formula", content: "\\text{Área}(D)=\\oint_{\\gamma^+} x\\,dy=-\\oint_{\\gamma^+} y\\,dx=\\frac12\\oint_{\\gamma^+} x\\,dy-y\\,dx" },
+    { type: "formula", content: "\\operatorname{rot}\\vec F=\\nabla\\times\\vec F=\\left(R_y-Q_z,\\ P_z-R_x,\\ Q_x-P_y\\right),\\qquad \\operatorname{div}\\vec F=P_x+Q_y+R_z" },
+    { type: "formula", content: "\\iint_S \\vec F\\cdot d\\vec S=\\iint_D \\vec F(\\vec r(u,v))\\cdot(T_u\\times T_v)\\,dA,\\qquad A(S)=\\iint_D\\lVert T_u\\times T_v\\rVert\\,dA", caption: "Flujo y área de superficie. Gráfico \\(z=g(x,y)\\): \\(T_x\\times T_y=(-g_x,\\,-g_y,\\,1)\\) (apunta hacia arriba)." },
+    { type: "formula", content: "\\oint_C \\vec F\\cdot d\\vec r=\\iint_S \\operatorname{rot}\\vec F\\cdot d\\vec S\\qquad\\qquad \\iint_{S=\\partial E}\\vec F\\cdot d\\vec S=\\iiint_E \\operatorname{div}\\vec F\\,dV", caption: "Stokes (orientaciones coherentes, regla de la mano derecha) y Divergencia/Gauss (\\(S\\) **cerrada**, normal exterior)." },
+    { type: "callout", content: "En el examen SIEMPRE: (1) **nombra el teorema** y verifica sus hipótesis; (2) **verifica la orientación** de la normal evaluándola en un punto; (3) muestra **cada paso** (la rúbrica da puntos por paso); (4) si puedes, **verifica por un segundo método**." }
+  ],
+  keyTakeaways: [
+    "Los temas que **más caen**: Lagrange con bifurcación de casos, sólido **esfera–cono** en esféricas, límites por trayectorias/polares, campos conservativos + TFIL, Green y Stokes con verificación cruzada.",
+    "Formato típico: pruebas de 4 preguntas / exámenes de 5–6 preguntas, 120 min, con subpreguntas progresivas (plantear en varios sistemas de coordenadas o resolver por dos métodos).",
+    "Trampas #1: no normalizar \\(\\vec u\\), olvidar el jacobiano \\(r\\) o \\(\\rho^2\\operatorname{sen}\\varphi\\), y no justificar hipótesis (Weierstrass, simplemente conexo, orientación)."
+  ]
+},
+{
+  id: "funciones-limites", icon: "🗺️", title: "Funciones y límites", widget: "limite-trayectorias",
+  subtitle: "Dominio, curvas de nivel, límites y continuidad (Clases 1–6)",
+  theory: [
+    { type: "para", content: "**Dominio natural:** los puntos donde la fórmula está definida (radicandos \\(\\ge 0\\), argumentos de \\(\\ln\\) positivos, denominadores \\(\\neq 0\\)). El profesor pide además **graficarlo** y hallar el **recorrido**." },
+    { type: "para", content: "**Curva de nivel** de \\(f(x,y)\\): \\(C_{z_0}=\\{(x,y): f(x,y)=z_0\\}\\) — la intersección del gráfico con el plano \\(z=z_0\\). Con 3 variables se llaman **superficies de nivel** (esferas, paraboloides, conos…)." },
+    { type: "para", content: "**Para probar que un límite NO existe:** encuentra dos trayectorias con límites distintos (rectas \\(y=mx\\), parábolas \\(y=x^2\\) o \\(x=y^2\\), los ejes), o pasa a polares y muestra que el resultado depende de \\(\\theta\\)." },
+    { type: "formula", content: "f(r\\cos\\theta,\\ r\\operatorname{sen}\\theta)=H(r)\\,G(\\theta),\\quad H(r)\\to 0,\\ G\\ \\text{acotada}\\ \\Longrightarrow\\ \\lim_{(x,y)\\to(0,0)}f=0", caption: "Criterio polar de existencia. Si el punto no es el origen, usa polares **centradas**: \\(x=a+r\\cos\\theta\\), \\(y=b+r\\operatorname{sen}\\theta\\)." },
+    { type: "callout", content: "Que el límite dé lo mismo por **todas las rectas** \\(y=mx\\) NO demuestra que exista: \\(f(x,y)=\\dfrac{y^2x}{y^4+x^2}\\) da 0 por toda recta, pero por \\(x=y^2\\) da \\(\\tfrac12\\) (cayó en la Prueba 1)." },
+    { type: "para", content: "**Continuidad:** \\(f\\) es continua en \\(\\vec x_0\\) si \\(\\lim_{\\vec x\\to\\vec x_0}f(\\vec x)=f(\\vec x_0)\\). En funciones definidas por casos, estudia el límite en el punto de pegado y compáralo con el valor asignado. **Clairaut/Schwarz:** si las derivadas mixtas son continuas en un disco, \\(f_{xy}=f_{yx}\\)." }
+  ],
+  exercises: [
+    {
+      statement: "**(Prueba 1, 2026)** Estudia la existencia de \\(\\displaystyle\\lim_{(x,y)\\to(3,0)}\\frac{xy-3y}{(x-3)^2+y^2}\\).",
+      steps: [
+        { prompt: "El punto no es el origen. ¿Qué sustitución conviene?",
+          hints: ["Polares centradas en \\((3,0)\\)."],
+          revealLatex: "x=3+r\\cos\\theta,\\qquad y=r\\operatorname{sen}\\theta",
+          explanation: "Así \\((x,y)\\to(3,0)\\) equivale a \\(r\\to 0\\)." },
+        { prompt: "Factoriza el numerador y sustituye.",
+          hints: ["\\(xy-3y=y(x-3)\\)."],
+          revealLatex: "\\frac{y(x-3)}{(x-3)^2+y^2}=\\frac{r^2\\operatorname{sen}\\theta\\cos\\theta}{r^2}=\\operatorname{sen}\\theta\\cos\\theta" },
+        { prompt: "Concluye.",
+          hints: ["¿El resultado depende de \\(\\theta\\)?"],
+          revealLatex: "\\theta=0\\Rightarrow 0;\\qquad \\theta=\\tfrac{\\pi}{4}\\Rightarrow\\tfrac12",
+          explanation: "El valor depende de la dirección de acercamiento: por unicidad del límite, no existe." }
+      ],
+      finalAnswerLatex: "\\text{El límite NO existe}"
+    },
+    {
+      statement: "**(Clases 3–4)** Calcula \\(\\displaystyle\\lim_{(x,y)\\to(0,0)}\\frac{x^2y^2}{x^2+y^2}\\).",
+      steps: [
+        { prompt: "Acota el cociente usando \\(\\dfrac{x^2}{x^2+y^2}\\le 1\\).",
+          hints: [],
+          revealLatex: "0\\le\\frac{x^2y^2}{x^2+y^2}=y^2\\cdot\\frac{x^2}{x^2+y^2}\\le y^2" },
+        { prompt: "Aplica el teorema de acotamiento (sandwich).",
+          hints: ["Ambas cotas tienden a 0."],
+          revealLatex: "y^2\\to 0\\ \\Longrightarrow\\ \\lim_{(x,y)\\to(0,0)}\\frac{x^2y^2}{x^2+y^2}=0" }
+      ],
+      finalAnswerLatex: "0"
+    }
+  ],
+  conceptual: [
+    {
+      question: "Verificas que \\(\\lim f\\) vale \\(0\\) a lo largo de **todas** las rectas \\(y=mx\\). ¿Puedes concluir que el límite existe y vale 0?",
+      options: [
+        { text: "No: aún puede fallar por una curva (p. ej. \\(x=y^2\\)).", correct: true, feedback: "Exacto. Las trayectorias solo sirven para PROBAR que NO existe; nunca para probar existencia." },
+        { text: "Sí, las rectas cubren todas las direcciones.", correct: false, feedback: "Cubren direcciones, pero no todas las formas de acercarse: una parábola puede dar otro valor (Prueba 1, Q3)." },
+        { text: "Sí, si además el límite por los ejes también es 0.", correct: false, feedback: "Los ejes son dos rectas más; el problema sigue siendo las trayectorias curvas." }
+      ],
+      explanation: "Para probar existencia usa acotamiento o el criterio polar \\(H(r)G(\\theta)\\) con \\(G\\) acotada; las trayectorias solo refutan."
+    },
+    {
+      question: "En polares llegas a \\(f=r\\cdot\\dfrac{\\operatorname{sen}\\theta}{2-\\cos\\theta}\\). ¿Qué concluyes del límite en \\((0,0)\\)?",
+      options: [
+        { text: "Vale 0: \\(H(r)=r\\to 0\\) y \\(G(\\theta)\\) es acotada.", correct: true, feedback: "Correcto: el denominador nunca se anula (está entre 1 y 3), así que \\(|G|\\le 1\\)." },
+        { text: "No existe, porque el resultado contiene \\(\\theta\\).", correct: false, feedback: "Que aparezca \\(\\theta\\) no basta: aquí va multiplicado por \\(r\\to 0\\) y \\(G\\) es acotada, entonces todo tiende a 0." },
+        { text: "No se puede decidir con polares.", correct: false, feedback: "Sí se puede: es exactamente la forma \\(H(r)G(\\theta)\\) del criterio de la Clase 3–4." }
+      ],
+      explanation: "El criterio exige DOS cosas: \\(H(r)\\to 0\\) y \\(G(\\theta)\\) acotada. Si el límite en \\(r\\to 0\\) dependiera de \\(\\theta\\) (sin factor \\(H\\)), NO existiría."
+    },
+    {
+      question: "\\(f(x,y)=\\dfrac{1-\\cos\\left(\\sqrt{x^2+y^2}\\right)}{x^2+y^2}\\) con \\(f(0,0)=1\\). ¿Es continua en el origen?",
+      options: [
+        { text: "No: el límite vale \\(\\tfrac12\\neq f(0,0)\\); se repara redefiniendo \\(f(0,0)=\\tfrac12\\).", correct: true, feedback: "Correcto: con \\(t=\\sqrt{x^2+y^2}\\to 0\\), \\(\\frac{1-\\cos t}{t^2}\\to\\frac12\\) (límite notable / L'Hôpital)." },
+        { text: "Sí, porque el límite existe.", correct: false, feedback: "Que exista no basta: debe COINCIDIR con \\(f(0,0)\\). Aquí da \\(\\tfrac12\\neq 1\\)." },
+        { text: "No, porque el límite no existe.", correct: false, feedback: "El límite sí existe (es una función de \\(r\\) solamente); el problema es el valor asignado en el origen." }
+      ],
+      explanation: "Continuidad = (1) definida, (2) límite existe, (3) límite = valor. La Prueba 1 usó esta misma idea con \\(\\frac{1-\\cos(xy)}{x^2y^2}\\to\\frac12\\)."
+    }
+  ],
+  keyTakeaways: [
+    "**Trayectorias → refutan; acotamiento/polares → confirman.** Nunca al revés.",
+    "Punto distinto del origen: **polares centradas** \\(x=a+r\\cos\\theta,\\ y=b+r\\operatorname{sen}\\theta\\).",
+    "Límites notables útiles: \\(\\frac{\\operatorname{sen}t}{t}\\to 1\\), \\(\\frac{1-\\cos t}{t^2}\\to\\frac12\\) (con \\(t\\) = expresión que tiende a 0).",
+    "Dominios: raíz \\(\\Rightarrow\\ \\ge 0\\); \\(\\ln\\Rightarrow\\gt 0\\); fracción \\(\\Rightarrow\\neq 0\\). Dibuja la región."
+  ]
+},
+{
+  id: "diferenciabilidad", icon: "📐", title: "Diferenciabilidad y gradiente", widget: "gradiente-direccional",
+  subtitle: "Plano tangente, regla de la cadena y derivada direccional (Clases 7–11)",
+  theory: [
+    { type: "formula", content: "\\lim_{(h,k)\\to(0,0)}\\frac{\\left|f(a+h,b+k)-f(a,b)-f_x(a,b)\\,h-f_y(a,b)\\,k\\right|}{\\sqrt{h^2+k^2}}=0", caption: "Definición: \\(f\\) es **diferenciable** en \\((a,b)\\) si existen las parciales y este límite es 0 (el error de la aproximación lineal muere más rápido que la distancia)." },
+    { type: "para", content: "**Teoremas clave:** diferenciable \\(\\Rightarrow\\) continua (contrapositiva: si no es continua, no es diferenciable — así se resuelve rápido en las pruebas). Parciales continuas en una vecindad \\(\\Rightarrow\\) diferenciable (la vía rápida para funciones elementales). Los recíprocos fallan." },
+    { type: "formula", content: "z=f(a,b)+f_x(a,b)(x-a)+f_y(a,b)(y-b)", caption: "Plano tangente = gráfico de la aproximación lineal \\(L(x,y)\\). Para **estimar** \\(f\\) cerca de \\((a,b)\\): evalúa \\(L\\)." },
+    { type: "para", content: "**Derivada direccional** (\\(\\vec u\\) unitario): \\(D_{\\vec u}f(\\vec a)=\\lim_{t\\to 0}\\frac{f(\\vec a+t\\vec u)-f(\\vec a)}{t}\\). Si \\(f\\) es diferenciable: \\(D_{\\vec u}f(\\vec a)=\\nabla f(\\vec a)\\cdot\\vec u\\). El gradiente apunta hacia el **máximo crecimiento** y es **ortogonal** a las curvas/superficies de nivel." },
+    { type: "formula", content: "\\Pi:\\ F_x(P_0)(x-a)+F_y(P_0)(y-b)+F_z(P_0)(z-c)=0", caption: "Plano tangente a la superficie \\(F(x,y,z)=0\\) en \\(P_0=(a,b,c)\\): la normal es \\(\\nabla F(P_0)\\)." },
+    { type: "callout", content: "**Función implícita (cae en pruebas):** si \\(F\\) es \\(\\mathcal{C}^1\\), \\(F(P_0)=0\\) y \\(F_z(P_0)\\neq 0\\), la ecuación define \\(z=f(x,y)\\) cerca de \\(P_0\\), con \\(f_x=-F_x/F_z\\) y \\(f_y=-F_y/F_z\\)." }
+  ],
+  guidedDerivation: {
+    title: "¿Hacia dónde crece más rápido \\(f\\)?",
+    intro: "Deduce la propiedad estrella del gradiente a partir del teorema \\(D_{\\vec u}f=\\nabla f\\cdot\\vec u\\).",
+    steps: [
+      { prompt: "Escribe el producto punto en su forma geométrica, usando que \\(\\vec u\\) es unitario.",
+        hints: ["\\(\\vec a\\cdot\\vec b=\\lVert\\vec a\\rVert\\,\\lVert\\vec b\\rVert\\cos\\alpha\\)", "\\(\\lVert\\vec u\\rVert=1\\)"],
+        revealLatex: "D_{\\vec u}f(\\vec a)=\\lVert\\nabla f(\\vec a)\\rVert\\cos\\alpha",
+        explanation: "\\(\\alpha\\) es el ángulo entre \\(\\nabla f(\\vec a)\\) y \\(\\vec u\\)." },
+      { prompt: "¿Cuándo es máxima la derivada direccional y cuánto vale?",
+        hints: ["\\(\\cos\\alpha\\) alcanza su máximo en \\(\\alpha=0\\)."],
+        revealLatex: "\\alpha=0:\\quad D_{\\vec u}f=\\lVert\\nabla f(\\vec a)\\rVert\\ \\ \\text{con}\\ \\vec u=\\frac{\\nabla f(\\vec a)}{\\lVert\\nabla f(\\vec a)\\rVert}" },
+      { prompt: "¿Y la mínima? ¿Qué pasa cuando \\(\\vec u\\) es tangente a la curva de nivel?",
+        hints: ["\\(\\cos\\pi=-1\\); tangente a la curva de nivel significa \\(\\alpha=\\pi/2\\)."],
+        revealLatex: "\\alpha=\\pi:\\ D_{\\vec u}f=-\\lVert\\nabla f\\rVert;\\qquad \\alpha=\\tfrac{\\pi}{2}:\\ D_{\\vec u}f=0",
+        explanation: "Por eso \\(\\nabla f\\) es ortogonal a los conjuntos de nivel: a lo largo del nivel, \\(f\\) no cambia." }
+    ]
+  },
+  exercises: [
+    {
+      statement: "**(Examen 2024)** Calcula la derivada direccional de \\(G(x,y,z)=x\\,e^{yz}+xy\\,e^{z}\\) en \\(P_0=(-2,1,1)\\) en la dirección de \\(\\vec v=(1,-2,3)\\).",
+      steps: [
+        { prompt: "Calcula el gradiente de \\(G\\).",
+          hints: ["Deriva componente a componente; ojo con el producto en la segunda."],
+          revealLatex: "\\nabla G=\\left(e^{yz}+y\\,e^{z},\\ \\ xz\\,e^{yz}+x\\,e^{z},\\ \\ xy\\,e^{yz}+xy\\,e^{z}\\right)" },
+        { prompt: "Evalúa en \\(P_0=(-2,1,1)\\).",
+          hints: ["Todos los exponentes valen \\(e^{1}=e\\)."],
+          revealLatex: "\\nabla G(P_0)=(e+e,\\ -2e-2e,\\ -2e-2e)=(2e,\\,-4e,\\,-4e)" },
+        { prompt: "Trampa clásica: \\(\\vec v\\) NO es unitario. Normalízalo.",
+          hints: ["\\(\\lVert\\vec v\\rVert=\\sqrt{1+4+9}\\)"],
+          revealLatex: "\\vec u=\\frac{1}{\\sqrt{14}}\\,(1,-2,3)" },
+        { prompt: "Aplica \\(D_{\\vec u}G(P_0)=\\nabla G(P_0)\\cdot\\vec u\\).",
+          hints: [],
+          revealLatex: "\\frac{2e+8e-12e}{\\sqrt{14}}=\\frac{-2e}{\\sqrt{14}}=-\\frac{e\\sqrt{14}}{7}" }
+      ],
+      finalAnswerLatex: "D_{\\vec u}G(P_0)=-\\dfrac{e\\sqrt{14}}{7}"
+    },
+    {
+      statement: "**(Prueba 1, 2026)** La ecuación \\(x^2z+2xy+yz+z^3=2\\) define \\(z=f(x,y)\\) cerca de \\((1,1)\\) con \\(f(1,1)=0\\). Justifícalo, halla el plano tangente en \\((1,1,0)\\) y estima \\(f(0.9,\\,1.1)\\).",
+      steps: [
+        { prompt: "Define \\(F(x,y,z)=x^2z+2xy+yz+z^3-2\\) y verifica las hipótesis del Teorema de la Función Implícita en \\((1,1,0)\\).",
+          hints: ["Necesitas \\(F(1,1,0)=0\\), \\(F\\) de clase \\(\\mathcal{C}^1\\) (es polinomio) y \\(F_z(1,1,0)\\neq 0\\)."],
+          revealLatex: "F(1,1,0)=0;\\qquad F_z=x^2+y+3z^2\\ \\Rightarrow\\ F_z(1,1,0)=2\\neq 0" },
+        { prompt: "Calcula \\(f_x(1,1)\\) y \\(f_y(1,1)\\) con derivación implícita.",
+          hints: ["\\(f_x=-F_x/F_z\\), \\(f_y=-F_y/F_z\\)", "\\(F_x=2xz+2y\\), \\(F_y=2x+z\\)"],
+          revealLatex: "f_x(1,1)=-\\frac{2}{2}=-1,\\qquad f_y(1,1)=-\\frac{2}{2}=-1" },
+        { prompt: "Escribe el plano tangente en \\((1,1,0)\\).",
+          hints: ["\\(z=f(1,1)+f_x(x-1)+f_y(y-1)\\)"],
+          revealLatex: "z=-(x-1)-(y-1)\\ \\Longrightarrow\\ z=-x-y+2" },
+        { prompt: "Estima \\(f(0.9,\\,1.1)\\) con la aproximación lineal.",
+          hints: ["Evalúa \\(L(x,y)=-x-y+2\\)."],
+          revealLatex: "L(0.9,\\,1.1)=-0.9-1.1+2=0" }
+      ],
+      finalAnswerLatex: "\\Pi:\\ z=-x-y+2;\\qquad f(0.9,1.1)\\approx 0"
+    }
+  ],
+  conceptual: [
+    {
+      question: "Te piden \\(D_{\\vec v}f(P)\\) con \\(\\vec v=(3,4)\\). ¿Cuál es el primer paso obligatorio?",
+      options: [
+        { text: "Normalizar: usar \\(\\vec u=\\tfrac15(3,4)\\).", correct: true, feedback: "Sí: la fórmula \\(\\nabla f\\cdot\\vec u\\) exige \\(\\vec u\\) unitario. Aquí \\(\\lVert\\vec v\\rVert=5\\)." },
+        { text: "Calcular \\(\\nabla f(P)\\cdot(3,4)\\) directamente.", correct: false, feedback: "Error clásico de examen: sin normalizar, el resultado queda multiplicado por \\(\\lVert\\vec v\\rVert=5\\)." },
+        { text: "Verificar que \\(f\\) sea continua en \\(P\\).", correct: false, feedback: "La hipótesis del teorema es que \\(f\\) sea DIFERENCIABLE en \\(P\\), y lo que exige la definición es \\(\\vec u\\) unitario." }
+      ],
+      explanation: "Derivada direccional = razón de cambio por unidad de longitud: por eso la dirección debe ser un vector unitario."
+    },
+    {
+      question: "Si \\(f_x(0,0)\\) y \\(f_y(0,0)\\) existen, ¿\\(f\\) es diferenciable en \\((0,0)\\)?",
+      options: [
+        { text: "No necesariamente: puede incluso no ser continua ahí.", correct: true, feedback: "Correcto: \\(f=\\frac{y^2x}{y^4+x^2}\\) (Prueba 1) tiene ambas parciales 0 en el origen y ni siquiera es continua." },
+        { text: "Sí, esa es la definición de diferenciabilidad.", correct: false, feedback: "No: la definición exige además que el error de la aproximación lineal, dividido por la distancia, tienda a 0." },
+        { text: "Sí, siempre que las parciales sean finitas.", correct: false, feedback: "Existir y ser finitas no basta; necesitas parciales CONTINUAS en una vecindad para garantizar diferenciabilidad." }
+      ],
+      explanation: "Cadena: parciales continuas \\(\\Rightarrow\\) diferenciable \\(\\Rightarrow\\) continua. Existencia de parciales por sí sola no implica nada más."
+    },
+    {
+      question: "La temperatura es \\(T(x,y,z)\\) y estás en \\(P\\). ¿En qué dirección debes moverte para que la temperatura **baje** lo más rápido posible, y a qué tasa?",
+      options: [
+        { text: "En la dirección de \\(-\\nabla T(P)\\); la tasa es \\(-\\lVert\\nabla T(P)\\rVert\\).", correct: true, feedback: "Correcto: mínimo de \\(\\cos\\alpha\\) en \\(\\alpha=\\pi\\)." },
+        { text: "Perpendicular a \\(\\nabla T(P)\\).", correct: false, feedback: "Perpendicular al gradiente la temperatura NO cambia (te mueves por la superficie de nivel)." },
+        { text: "En la dirección de \\(\\nabla T(P)\\), con tasa \\(\\lVert\\nabla T\\rVert\\).", correct: false, feedback: "Esa es la dirección de máximo AUMENTO." }
+      ],
+      explanation: "Máximo crecimiento: \\(+\\nabla T\\), tasa \\(\\lVert\\nabla T\\rVert\\). Máximo descenso: \\(-\\nabla T\\), tasa \\(-\\lVert\\nabla T\\rVert\\). Sin cambio: tangente al nivel."
+    }
+  ],
+  keyTakeaways: [
+    "**Vía rápida a diferenciabilidad:** parciales continuas en una vecindad. **Vía rápida a NO diferenciabilidad:** no es continua.",
+    "\\(D_{\\vec u}f=\\nabla f\\cdot\\vec u\\) con \\(\\vec u\\) **unitario**; máximo \\(\\lVert\\nabla f\\rVert\\) en la dirección del gradiente.",
+    "Dos planos tangentes: gráfico \\(z=f(x,y)\\) → \\(z=L(x,y)\\); superficie \\(F=0\\) → normal \\(\\nabla F\\).",
+    "Implícita: \\(f_x=-F_x/F_z\\) (verifica \\(F_z\\neq 0\\) y menciona el TFI: da puntos)."
+  ]
+},
+{
+  id: "optimizacion", icon: "⛰️", title: "Optimización", widget: "none",
+  subtitle: "Hessiano, compactos y Lagrange (Clases 12–13)",
+  theory: [
+    { type: "para", content: "**Punto crítico:** \\(\\nabla f(\\vec x_0)=\\vec 0\\). Los extremos relativos (si \\(f\\) es diferenciable) están **entre los críticos**; si un crítico no es extremo, es **punto silla**." },
+    { type: "formula", content: "H_f=\\begin{bmatrix} f_{xx} & f_{xy}\\\\ f_{xy} & f_{yy}\\end{bmatrix},\\qquad D=\\det H_f=f_{xx}f_{yy}-f_{xy}^2", caption: "Evaluada EN el punto crítico. \\(D\\gt 0,f_{xx}\\gt 0\\): mínimo; \\(D\\gt 0,f_{xx}\\lt 0\\): máximo; \\(D\\lt 0\\): silla; \\(D=0\\): el criterio no decide." },
+    { type: "para", content: "En \\(n\\) variables el curso usa los **subdeterminantes principales** \\(\\det A_1,\\dots,\\det A_n\\): todos positivos → definida positiva (mínimo); signos alternados empezando en negativo → definida negativa (máximo); ninguno nulo pero sin patrón → silla." },
+    { type: "para", content: "**Extremos absolutos sobre un compacto** (cerrado y acotado): (1) cita **Weierstrass** (existen); (2) críticos en el **interior**; (3) analiza la **frontera** restringiendo \\(f\\) a cada tramo (queda en una variable) o con Lagrange, sin olvidar **vértices**; (4) compara todos los valores." },
+    { type: "formula", content: "\\nabla f(\\vec x_0)=\\lambda\\,\\nabla g(\\vec x_0),\\qquad g(\\vec x_0)=0", caption: "Lagrange: \\(f,g\\in\\mathcal{C}^1\\), \\(\\nabla g(\\vec x_0)\\neq\\vec 0\\). \\(g\\) es la restricción escrita como \\(=0\\)." },
+    { type: "callout", content: "El sistema de Lagrange casi siempre **bifurca**: de una ecuación tipo \\(2y(1-\\lambda)=0\\) salen los casos \\(y=0\\) **o** \\(\\lambda=1\\). Recorre TODAS las ramas y reúne todos los candidatos antes de comparar." }
+  ],
+  exercises: [
+    {
+      statement: "**(Examen)** Sea \\(f(x,y)=4+xy-x^2-y^2\\). (a) Halla y clasifica sus puntos críticos. (b) Halla los extremos de \\(f\\) sobre la circunferencia \\(x^2+y^2=2\\).",
+      steps: [
+        { prompt: "Encuentra los puntos críticos de \\(f\\).",
+          hints: ["Resuelve \\(f_x=0\\) y \\(f_y=0\\) simultáneamente."],
+          revealLatex: "f_x=y-2x=0,\\quad f_y=x-2y=0\\ \\Longrightarrow\\ (0,0)" },
+        { prompt: "Clasifícalo con el Hessiano.",
+          hints: ["\\(D=f_{xx}f_{yy}-f_{xy}^2\\)"],
+          revealLatex: "f_{xx}=-2,\\ f_{yy}=-2,\\ f_{xy}=1:\\quad D=4-1=3\\gt 0,\\ f_{xx}\\lt 0\\ \\Rightarrow\\ \\text{máximo local},\\ f(0,0)=4" },
+        { prompt: "Para la parte (b), plantea el sistema de Lagrange con \\(g=x^2+y^2-2\\).",
+          hints: [],
+          revealLatex: "y-2x=2\\lambda x,\\qquad x-2y=2\\lambda y,\\qquad x^2+y^2=2" },
+        { prompt: "Resuelve el sistema.",
+          hints: ["Suma las dos primeras ecuaciones: \\(-(x+y)=2\\lambda(x+y)\\), o sea \\((x+y)(2\\lambda+1)=0\\).", "Caso \\(\\lambda=-\\tfrac12\\): la primera ecuación da \\(y=x\\). Caso \\(x+y=0\\): \\(y=-x\\)."],
+          revealLatex: "y=x\\Rightarrow(1,1),\\,(-1,-1);\\qquad y=-x\\Rightarrow(1,-1),\\,(-1,1)" },
+        { prompt: "Evalúa los candidatos y justifica que máximo y mínimo se alcanzan.",
+          hints: ["La circunferencia es cerrada y acotada y \\(f\\) es continua…"],
+          revealLatex: "f(1,1)=f(-1,-1)=3\\ (\\text{máx});\\qquad f(1,-1)=f(-1,1)=1\\ (\\text{mín})",
+          explanation: "Weierstrass garantiza que sobre el compacto \\(x^2+y^2=2\\) los extremos absolutos existen; por eso basta comparar candidatos." }
+      ],
+      finalAnswerLatex: "\\text{(a) máx local } f(0,0)=4;\\quad \\text{(b) máx }3\\text{ en }(\\pm1,\\pm1),\\ \\text{mín }1\\text{ en }(\\pm1,\\mp1)"
+    },
+    {
+      statement: "**(Examen 2024)** Determina el máximo de \\(f(x,y)=9-x^2-y^2\\) sujeto a \\(x+y=3\\).",
+      steps: [
+        { prompt: "Plantea el sistema de Lagrange con \\(g(x,y)=x+y-3\\).",
+          hints: [],
+          revealLatex: "-2x=\\lambda,\\qquad -2y=\\lambda,\\qquad x+y=3" },
+        { prompt: "Resuelve.",
+          hints: ["Iguala las dos primeras ecuaciones."],
+          revealLatex: "-2x=-2y\\Rightarrow x=y;\\qquad x+y=3\\Rightarrow x=y=\\tfrac32" },
+        { prompt: "Evalúa.",
+          hints: [],
+          revealLatex: "f\\left(\\tfrac32,\\tfrac32\\right)=9-\\tfrac94-\\tfrac94=\\tfrac92" }
+      ],
+      finalAnswerLatex: "f_{\\max}=\\tfrac92\\ \\text{en}\\ \\left(\\tfrac32,\\tfrac32\\right)"
+    }
+  ],
+  conceptual: [
+    {
+      question: "¿Qué garantiza el teorema de Weierstrass del curso y qué hipótesis exige?",
+      options: [
+        { text: "Si \\(f\\) es continua y \\(D\\) es cerrado y acotado, \\(f\\) alcanza máximo y mínimo absolutos en \\(D\\).", correct: true, feedback: "Exacto — y el profesor espera que lo CITES antes de comparar candidatos." },
+        { text: "Todo punto crítico en un compacto es extremo absoluto.", correct: false, feedback: "No: los críticos son solo candidatos; en el compacto además compiten con la frontera." },
+        { text: "Si \\(f\\) es diferenciable, tiene máximo en el interior de \\(D\\).", correct: false, feedback: "Falso: el máximo puede estar en la frontera (pasa constantemente en las pruebas)." }
+      ],
+      explanation: "Continua + cerrado y acotado ⇒ existen máx y mín absolutos. Luego: interior (críticos) + frontera (+ vértices) y comparar."
+    },
+    {
+      question: "En un punto crítico obtienes \\(D=f_{xx}f_{yy}-f_{xy}^2=0\\). ¿Qué concluyes?",
+      options: [
+        { text: "El criterio no decide: hay que analizar directamente (signos de \\(f\\) cerca del punto).", correct: true, feedback: "Correcto: con determinante nulo el Hessiano no clasifica." },
+        { text: "Es un punto silla.", correct: false, feedback: "Silla es cuando \\(D\\lt 0\\) (o el patrón de subdeterminantes no calza sin ceros)." },
+        { text: "Es un mínimo si \\(f_{xx}\\gt 0\\).", correct: false, feedback: "Ese criterio solo aplica cuando \\(D\\gt 0\\)." }
+      ],
+      explanation: "El criterio del Hessiano exige subdeterminantes no nulos; \\(D=0\\) lo deja mudo y se estudia la función directamente."
+    },
+    {
+      question: "Optimizas \\(f\\) sobre el **disco** \\(x^2+y^2\\le 4\\) (no solo el borde). ¿Cuál es el plan correcto?",
+      options: [
+        { text: "Críticos libres con \\(\\nabla f=\\vec 0\\) en el interior + Lagrange (o parametrizar) en la frontera \\(x^2+y^2=4\\); comparar todo.", correct: true, feedback: "Ese es el procedimiento interior + frontera de la Clase 13." },
+        { text: "Solo Lagrange con \\(g=x^2+y^2-4\\).", correct: false, feedback: "Lagrange solo cubre la FRONTERA; te perderías un extremo interior." },
+        { text: "Solo puntos críticos de \\(f\\).", correct: false, feedback: "Ignora la frontera, donde suele estar el máximo absoluto." }
+      ],
+      explanation: "Desigualdad (\\(\\le\\)) = región 2D: interior por críticos, borde por Lagrange/parametrización, y se comparan valores."
+    }
+  ],
+  keyTakeaways: [
+    "Procedimiento libre: \\(\\nabla f=\\vec 0\\) → Hessiano en cada crítico → clasifica con \\(D\\) y \\(f_{xx}\\).",
+    "Compacto: **Weierstrass** (cítalo) + interior + frontera + vértices → comparar.",
+    "Lagrange: \\(\\nabla f=\\lambda\\nabla g,\\ g=0\\); **bifurca los casos** y evalúa \\(f\\) en todos los candidatos.",
+    "Con parámetros (\\(a,b\\)): clasifica según los **signos** de los subdeterminantes en cada caso (cayó en el Examen 2024)."
+  ]
+},
+{
+  id: "dobles", icon: "🧩", title: "Integrales dobles", widget: "none",
+  subtitle: "Fubini, regiones, cambio de orden y de variables (Clases 14–16)",
+  theory: [
+    { type: "para", content: "**Fubini (rectángulo):** si \\(f\\) es continua en \\(R=[a,b]\\times[c,d]\\), la integral doble se calcula iterada **en cualquier orden**. La integral de \\(f\\ge 0\\) es el **volumen** bajo \\(z=f(x,y)\\); entre dos superficies: \\(V=\\iint_D (f-g)\\,dA\\) con \\(g\\le f\\)." },
+    { type: "formula", content: "\\text{Tipo I: } a\\le x\\le b,\\ g_1(x)\\le y\\le g_2(x)\\qquad\\qquad \\text{Tipo II: } c\\le y\\le d,\\ h_1(y)\\le x\\le h_2(y)", caption: "Para describir la región: dibújala, halla intersecciones de las curvas frontera y proyecta sobre un eje." },
+    { type: "para", content: "**Cambiar el orden de integración:** reconstruye la región desde los límites dados, dibújala y re-descríbela con el otro tipo. Es la salida obligada cuando el integrando no tiene primitiva elemental (\\(e^{y^2}\\), \\(\\operatorname{sen}(y^2)\\), …)." },
+    { type: "formula", content: "\\iint_D f(x,y)\\,dA=\\iint_{D^*} f\\big(x(u,v),y(u,v)\\big)\\left|\\frac{\\partial(x,y)}{\\partial(u,v)}\\right| du\\,dv", caption: "Cambio de variables: \\(T\\in\\mathcal{C}^1\\) inyectiva, \\(T(D^*)=D\\); usa el **valor absoluto** del jacobiano." },
+    { type: "callout", content: "Si las curvas frontera son de la forma \\(u(x,y)=c\\) (p. ej. \\(xy=1,3\\) y \\(x^2-y^2=1,9\\)), define \\(u,v\\) con esas expresiones: \\(D^*\\) queda rectangular, y el jacobiano sale con el recíproco \\(\\frac{\\partial(x,y)}{\\partial(u,v)}=1\\big/\\frac{\\partial(u,v)}{\\partial(x,y)}\\) sin despejar \\(x,y\\)." }
+  ],
+  guidedDerivation: {
+    title: "El factor \\(r\\) de las coordenadas polares",
+    intro: "Deduce por qué \\(dA=r\\,dr\\,d\\theta\\), como en la Clase 16.",
+    steps: [
+      { prompt: "Escribe la transformación polar y su matriz jacobiana.",
+        hints: ["\\(x=r\\cos\\theta,\\ y=r\\operatorname{sen}\\theta\\); deriva respecto de \\(r\\) y de \\(\\theta\\)."],
+        revealLatex: "DT(r,\\theta)=\\begin{bmatrix}\\cos\\theta & -r\\operatorname{sen}\\theta\\\\ \\operatorname{sen}\\theta & r\\cos\\theta\\end{bmatrix}" },
+      { prompt: "Calcula el determinante.",
+        hints: ["\\(\\cos^2\\theta+\\operatorname{sen}^2\\theta=1\\)"],
+        revealLatex: "\\frac{\\partial(x,y)}{\\partial(r,\\theta)}=r\\cos^2\\theta+r\\operatorname{sen}^2\\theta=r" },
+      { prompt: "Escribe la fórmula final del cambio a polares.",
+        hints: [],
+        revealLatex: "\\iint_D f(x,y)\\,dA=\\iint_{D^*} f(r\\cos\\theta,\\ r\\operatorname{sen}\\theta)\\;r\\;dr\\,d\\theta",
+        explanation: "Círculos, anillos y sectores → polares. El \\(r\\) también arregla integrandos con \\(x^2+y^2\\)." }
+    ]
+  },
+  exercises: [
+    {
+      statement: "**(Prueba 2, 2026)** Calcula \\(\\displaystyle\\iint_D (x^2+y^2)\\,dA\\), donde \\(D\\) está acotada por \\(xy=1\\), \\(xy=3\\), \\(x^2-y^2=1\\), \\(x^2-y^2=9\\).",
+      steps: [
+        { prompt: "Elige \\(u\\) y \\(v\\) según las curvas frontera.",
+          hints: ["Las fronteras son niveles de \\(x^2-y^2\\) y de \\(xy\\)."],
+          revealLatex: "u=x^2-y^2,\\quad v=xy\\ \\Longrightarrow\\ D^*=[1,9]\\times[1,3]" },
+        { prompt: "Calcula \\(\\dfrac{\\partial(u,v)}{\\partial(x,y)}\\) y de ahí el jacobiano que pide el teorema.",
+          hints: ["El teorema usa \\(\\partial(x,y)/\\partial(u,v)\\): toma el recíproco."],
+          revealLatex: "\\frac{\\partial(u,v)}{\\partial(x,y)}=\\det\\begin{bmatrix}2x & -2y\\\\ y & x\\end{bmatrix}=2(x^2+y^2)\\ \\Rightarrow\\ \\left|\\frac{\\partial(x,y)}{\\partial(u,v)}\\right|=\\frac{1}{2(x^2+y^2)}" },
+        { prompt: "Sustituye y observa la cancelación.",
+          hints: ["El integrando \\(x^2+y^2\\) se cancela con el jacobiano."],
+          revealLatex: "\\iint_{D^*}(x^2+y^2)\\cdot\\frac{1}{2(x^2+y^2)}\\,du\\,dv=\\frac12\\,\\text{Área}(D^*)=\\frac12\\cdot 8\\cdot 2" }
+      ],
+      finalAnswerLatex: "8"
+    },
+    {
+      statement: "**(Clase 15)** Evalúa \\(\\displaystyle\\int_0^2\\!\\!\\int_{x/2}^{1} e^{y^2}\\,dy\\,dx\\).",
+      steps: [
+        { prompt: "¿Por qué no se puede integrar directamente?",
+          hints: [],
+          revealLatex: "e^{y^2}\\ \\text{no tiene primitiva elemental respecto de } y",
+          explanation: "Señal inequívoca de que hay que cambiar el orden de integración." },
+        { prompt: "Dibuja la región y re-descríbela como tipo II.",
+          hints: ["\\(0\\le x\\le 2,\\ x/2\\le y\\le 1\\) es el triángulo de vértices \\((0,0)\\), \\((2,1)\\), \\((0,1)\\).", "Para \\(y\\) fijo, \\(x\\) va de 0 hasta la recta \\(y=x/2\\), o sea \\(x=2y\\)."],
+          revealLatex: "R=\\{\\,0\\le y\\le 1,\\ \\ 0\\le x\\le 2y\\,\\}" },
+        { prompt: "Integra en el nuevo orden.",
+          hints: ["La integral interior en \\(x\\) es inmediata; luego aparece \\(2y\\,e^{y^2}\\), que sí tiene primitiva."],
+          revealLatex: "\\int_0^1\\!\\!\\int_0^{2y}e^{y^2}dx\\,dy=\\int_0^1 2y\\,e^{y^2}\\,dy=\\Big[e^{y^2}\\Big]_0^1=e-1" }
+      ],
+      finalAnswerLatex: "e-1"
+    }
+  ],
+  conceptual: [
+    {
+      question: "Pasas \\(\\displaystyle\\iint_D e^{-(x^2+y^2)}dA\\) a polares sobre el cuarto de disco unitario del primer cuadrante. ¿Cuál es el planteo correcto?",
+      options: [
+        { text: "\\(\\displaystyle\\int_0^{\\pi/2}\\!\\!\\int_0^1 e^{-r^2}\\,r\\,dr\\,d\\theta\\)", correct: true, feedback: "Correcto: integrando en polares Y el factor jacobiano \\(r\\) (que además hace integrable \\(e^{-r^2}\\))." },
+        { text: "\\(\\displaystyle\\int_0^{\\pi/2}\\!\\!\\int_0^1 e^{-r^2}\\,dr\\,d\\theta\\)", correct: false, feedback: "Falta el jacobiano \\(r\\): el error más frecuente del tema (y sin él, la integral ni siquiera sale)." },
+        { text: "\\(\\displaystyle\\int_0^{2\\pi}\\!\\!\\int_0^1 e^{-r^2}\\,r\\,dr\\,d\\theta\\)", correct: false, feedback: "El jacobiano está bien, pero el cuarto de disco es \\(\\theta\\in[0,\\pi/2]\\), no la vuelta completa." }
+      ],
+      explanation: "\\(dA=r\\,dr\\,d\\theta\\) y la región manda los límites: cuarto de disco = \\(r\\in[0,1]\\), \\(\\theta\\in[0,\\pi/2]\\). Resultado: \\(\\frac{\\pi}{4}(1-\\frac{1}{e})\\)."
+    },
+    {
+      question: "Para cambiar el orden en \\(\\displaystyle\\int_1^4\\!\\!\\int_0^{\\ln x} f\\,dy\\,dx\\), ¿qué haces primero?",
+      options: [
+        { text: "Reconstruir y dibujar la región (\\(1\\le x\\le 4\\), \\(0\\le y\\le\\ln x\\)) y re-describirla con \\(x\\) en función de \\(y\\).", correct: true, feedback: "Sí: queda \\(0\\le y\\le\\ln 4\\), \\(e^y\\le x\\le 4\\)." },
+        { text: "Intercambiar los símbolos: \\(\\int_0^{\\ln x}\\int_1^4 f\\,dx\\,dy\\).", correct: false, feedback: "Los límites de la integral exterior NUNCA pueden contener la variable interior; hay que redibujar la región." },
+        { text: "Invertir \\(f\\).", correct: false, feedback: "El integrando no se toca; cambian solo la descripción de la región y el orden." }
+      ],
+      explanation: "Cambiar orden = re-describir la MISMA región: de \\(y\\) entre curvas de \\(x\\), a \\(x\\) entre curvas de \\(y\\) (despejando \\(y=\\ln x \\iff x=e^y\\))."
+    },
+    {
+      question: "Con \\(u=x^2-y^2\\), \\(v=xy\\), calculaste \\(\\frac{\\partial(u,v)}{\\partial(x,y)}=2(x^2+y^2)\\). ¿Qué factor entra en la integral sobre \\(D^*\\)?",
+      options: [
+        { text: "\\(\\dfrac{1}{2(x^2+y^2)}\\) — el valor absoluto del jacobiano **recíproco**.", correct: true, feedback: "Correcto: el teorema pide \\(\\left|\\partial(x,y)/\\partial(u,v)\\right|\\), que es el recíproco del que calculaste." },
+        { text: "\\(2(x^2+y^2)\\) tal cual.", correct: false, feedback: "Ese es \\(\\partial(u,v)/\\partial(x,y)\\); usarlo directo multiplica en vez de dividir (error típico)." },
+        { text: "\\(r\\), como en polares.", correct: false, feedback: "El \\(r\\) es el jacobiano del cambio POLAR; cada transformación tiene el suyo." }
+      ],
+      explanation: "Jacobianos inversos: \\(\\frac{\\partial(x,y)}{\\partial(u,v)}=1\\big/\\frac{\\partial(u,v)}{\\partial(x,y)}\\). Elegir \\(u,v\\) desde las fronteras + recíproco = método de la Prueba 2."
+    }
+  ],
+  keyTakeaways: [
+    "Dibuja SIEMPRE la región; de ahí salen tipo I/II, el cambio de orden y los límites en polares.",
+    "\\(e^{y^2}\\)-tipo sin primitiva → **cambio de orden obligado**.",
+    "Fronteras \\(u=c\\), \\(v=c\\) → ese es tu cambio de variables; jacobiano por el **recíproco**.",
+    "Polares: \\(dA=r\\,dr\\,d\\theta\\); discos, anillos, sectores e integrandos con \\(x^2+y^2\\)."
+  ]
+},
+{
+  id: "triples", icon: "🧊", title: "Integrales triples", widget: "esfera-cono",
+  subtitle: "Cartesianas, cilíndricas y esféricas (Clases 17–19)",
+  theory: [
+    { type: "formula", content: "\\iiint_D f\\,dV=\\iint_R\\left(\\int_{g_1(x,y)}^{g_2(x,y)} f\\,dz\\right)dA,\\qquad V(D)=\\iiint_D 1\\,dV", caption: "\\(D\\) entre las superficies \\(z=g_1\\) (piso) y \\(z=g_2\\) (techo); \\(R\\) = proyección sobre el plano \\(XY\\)." },
+    { type: "formula", content: "\\text{Cilíndricas: } x=r\\cos\\theta,\\ y=r\\operatorname{sen}\\theta,\\ z=z;\\qquad dV=r\\,dz\\,dr\\,d\\theta", caption: "Para sólidos con **simetría axial**: cilindros, paraboloides, conos alrededor del eje \\(z\\)." },
+    { type: "formula", content: "\\text{Esféricas: } x=\\rho\\cos\\theta\\operatorname{sen}\\varphi,\\ \\ y=\\rho\\operatorname{sen}\\theta\\operatorname{sen}\\varphi,\\ \\ z=\\rho\\cos\\varphi;\\qquad dV=\\rho^2\\operatorname{sen}\\varphi\\,d\\rho\\,d\\varphi\\,d\\theta", caption: "Convención del curso: \\(\\rho\\ge 0\\) distancia al origen, \\(\\theta\\in[0,2\\pi)\\) azimutal (como cilíndricas), \\(\\varphi\\in[0,\\pi]\\) medido desde el eje \\(z^+\\)." },
+    { type: "para", content: "**Diccionario esférico:** \\(x^2+y^2+z^2=\\rho^2\\); \\(\\sqrt{x^2+y^2}=\\rho\\operatorname{sen}\\varphi\\); \\(z=\\rho\\cos\\varphi\\). Esfera centrada en el origen de radio \\(a\\): \\(\\rho=a\\). Semiespacio \\(z\\ge 0\\): \\(\\varphi\\le\\pi/2\\). Plano \\(XY\\): \\(\\varphi=\\pi/2\\)." },
+    { type: "callout", content: "El sólido **esfera–cono** apareció (casi idéntico) en la Prueba 2 y en ambos exámenes: domínalo con el widget de abajo y el ejercicio 1. Variante 2024: cono + paraboloide con \\(x\\) como eje." }
+  ],
+  guidedDerivation: {
+    title: "Traducir superficies a esféricas",
+    intro: "Las dos traducciones que abren casi todos los problemas de esféricas del curso.",
+    steps: [
+      { prompt: "Escribe la esfera \\(x^2+y^2+z^2=4z\\) en esféricas.",
+        hints: ["\\(x^2+y^2+z^2=\\rho^2\\) y \\(z=\\rho\\cos\\varphi\\)."],
+        revealLatex: "\\rho^2=4\\rho\\cos\\varphi\\ \\Longrightarrow\\ \\rho=4\\cos\\varphi",
+        explanation: "Es la esfera de radio 2 centrada en \\((0,0,2)\\): completa cuadrados para verlo en cartesianas." },
+      { prompt: "Escribe el cono \\(z=\\sqrt{x^2+y^2}\\) en esféricas.",
+        hints: ["\\(\\sqrt{x^2+y^2}=\\rho\\operatorname{sen}\\varphi\\) (válido pues \\(\\operatorname{sen}\\varphi\\ge 0\\) en \\([0,\\pi]\\))."],
+        revealLatex: "\\rho\\cos\\varphi=\\rho\\operatorname{sen}\\varphi\\ \\Longrightarrow\\ \\tan\\varphi=1\\ \\Longrightarrow\\ \\varphi=\\tfrac{\\pi}{4}",
+        explanation: "Un cono con vértice en el origen es simplemente \\(\\varphi=\\) constante." },
+      { prompt: "Describe el sólido dentro de la esfera y **sobre** el cono.",
+        hints: ["Sobre el cono = ángulos \\(\\varphi\\) menores que el del cono."],
+        revealLatex: "0\\le\\theta\\le 2\\pi,\\qquad 0\\le\\varphi\\le\\tfrac{\\pi}{4},\\qquad 0\\le\\rho\\le 4\\cos\\varphi" }
+    ]
+  },
+  exercises: [
+    {
+      statement: "**(Prueba 2, 2026)** Calcula el volumen del sólido acotado arriba por la esfera \\(x^2+y^2+z^2=4z\\) y abajo por el cono \\(z=\\sqrt{x^2+y^2}\\).",
+      steps: [
+        { prompt: "Plantea la integral en esféricas (usa la deducción guiada).",
+          hints: ["No olvides el jacobiano \\(\\rho^2\\operatorname{sen}\\varphi\\)."],
+          revealLatex: "V=\\int_0^{2\\pi}\\!\\!\\int_0^{\\pi/4}\\!\\!\\int_0^{4\\cos\\varphi} \\rho^2\\operatorname{sen}\\varphi\\ d\\rho\\,d\\varphi\\,d\\theta" },
+        { prompt: "Integra en \\(\\rho\\).",
+          hints: [],
+          revealLatex: "\\int_0^{4\\cos\\varphi}\\rho^2 d\\rho=\\frac{64\\cos^3\\varphi}{3}\\ \\Rightarrow\\ V=\\frac{64}{3}\\int_0^{2\\pi}\\!\\!\\int_0^{\\pi/4}\\cos^3\\varphi\\,\\operatorname{sen}\\varphi\\ d\\varphi\\,d\\theta" },
+        { prompt: "Integra en \\(\\varphi\\) con la sustitución \\(w=\\cos\\varphi\\).",
+          hints: ["\\(dw=-\\operatorname{sen}\\varphi\\,d\\varphi\\)"],
+          revealLatex: "\\int_0^{\\pi/4}\\cos^3\\varphi\\,\\operatorname{sen}\\varphi\\,d\\varphi=\\left[-\\frac{\\cos^4\\varphi}{4}\\right]_0^{\\pi/4}=\\frac14\\left(1-\\frac14\\right)=\\frac{3}{16}" },
+        { prompt: "Termina el cálculo.",
+          hints: [],
+          revealLatex: "V=\\frac{64}{3}\\cdot\\frac{3}{16}\\cdot 2\\pi=8\\pi",
+          explanation: "Verificación del profesor: semiesfera de radio 2 \\(=\\frac{16\\pi}{3}\\) + cono de radio y altura 2 \\(=\\frac{8\\pi}{3}\\); suma \\(=8\\pi\\). ✓" }
+      ],
+      finalAnswerLatex: "V=8\\pi"
+    },
+    {
+      statement: "**(Examen)** Sea \\(E\\) el sólido acotado por \\(z=\\sqrt{9-x^2-y^2}\\) y \\(z=\\sqrt{x^2+y^2}\\). Calcula \\(\\displaystyle\\iiint_E z\\,dV\\) en esféricas.",
+      steps: [
+        { prompt: "Describe \\(E\\) en esféricas.",
+          hints: ["La esfera tiene radio 3 y está centrada en el origen; el cono es el de siempre."],
+          revealLatex: "0\\le\\rho\\le 3,\\qquad 0\\le\\varphi\\le\\tfrac{\\pi}{4},\\qquad 0\\le\\theta\\le 2\\pi;\\qquad z=\\rho\\cos\\varphi" },
+        { prompt: "Plantea la integral con el jacobiano.",
+          hints: [],
+          revealLatex: "\\int_0^{2\\pi}\\!\\!\\int_0^{\\pi/4}\\!\\!\\int_0^{3} \\rho\\cos\\varphi\\cdot\\rho^2\\operatorname{sen}\\varphi\\ d\\rho\\,d\\varphi\\,d\\theta" },
+        { prompt: "Integra (en \\(\\rho\\), luego \\(\\varphi\\), luego \\(\\theta\\)).",
+          hints: ["\\(\\int_0^3\\rho^3 d\\rho=\\frac{81}{4}\\); \\(\\int\\cos\\varphi\\operatorname{sen}\\varphi\\,d\\varphi=\\frac{\\operatorname{sen}^2\\varphi}{2}\\)"],
+          revealLatex: "\\frac{81}{4}\\cdot\\left[\\frac{\\operatorname{sen}^2\\varphi}{2}\\right]_0^{\\pi/4}\\cdot 2\\pi=\\frac{81}{4}\\cdot\\frac14\\cdot 2\\pi=\\frac{81\\pi}{8}" }
+      ],
+      finalAnswerLatex: "\\iiint_E z\\,dV=\\dfrac{81\\pi}{8}"
+    }
+  ],
+  conceptual: [
+    {
+      question: "¿Cuál es el elemento de volumen en coordenadas esféricas?",
+      options: [
+        { text: "\\(dV=\\rho^2\\operatorname{sen}\\varphi\\,d\\rho\\,d\\varphi\\,d\\theta\\)", correct: true, feedback: "Correcto: es el determinante jacobiano de la transformación." },
+        { text: "\\(dV=\\rho\\,d\\rho\\,d\\varphi\\,d\\theta\\)", correct: false, feedback: "El jacobiano \\(r\\) es el de CILÍNDRICAS (con \\(dz\\)); en esféricas es \\(\\rho^2\\operatorname{sen}\\varphi\\)." },
+        { text: "\\(dV=\\rho^2\\cos\\varphi\\,d\\rho\\,d\\varphi\\,d\\theta\\)", correct: false, feedback: "Con la convención del curso (\\(\\varphi\\) desde el eje \\(z\\)) es \\(\\operatorname{sen}\\varphi\\), no coseno." }
+      ],
+      explanation: "Memoriza el trío: cartesianas \\(dz\\,dy\\,dx\\), cilíndricas \\(r\\,dz\\,dr\\,d\\theta\\), esféricas \\(\\rho^2\\operatorname{sen}\\varphi\\,d\\rho\\,d\\varphi\\,d\\theta\\)."
+    },
+    {
+      question: "¿Qué describe la ecuación \\(\\varphi=\\dfrac{\\pi}{4}\\) en esféricas (convención del curso)?",
+      options: [
+        { text: "El cono \\(z=\\sqrt{x^2+y^2}\\).", correct: true, feedback: "Sí: ángulo constante de 45° desde el eje \\(z^+\\)." },
+        { text: "Un plano que pasa por el eje \\(z\\).", correct: false, feedback: "Eso sería \\(\\theta=\\) constante (el ángulo azimutal)." },
+        { text: "Una esfera de radio \\(\\pi/4\\).", correct: false, feedback: "Las esferas centradas en el origen son \\(\\rho=\\) constante." }
+      ],
+      explanation: "\\(\\rho=c\\): esfera; \\(\\varphi=c\\): cono desde el eje \\(z\\); \\(\\theta=c\\): semiplano vertical."
+    },
+    {
+      question: "Sólido acotado por el cilindro \\(x^2+y^2=4\\), el paraboloide \\(z=x^2+y^2\\) y el plano \\(XY\\). ¿Qué sistema conviene y con qué límites?",
+      options: [
+        { text: "Cilíndricas: \\(0\\le\\theta\\le 2\\pi,\\ 0\\le r\\le 2,\\ 0\\le z\\le r^2\\).", correct: true, feedback: "Correcto (Clase 18): simetría axial, techo \\(z=r^2\\), piso \\(z=0\\), radio hasta el cilindro \\(r=2\\)." },
+        { text: "Esféricas: \\(0\\le\\rho\\le 2\\).", correct: false, feedback: "Ni el cilindro ni el paraboloide quedan simples en esféricas; esa es para esferas/conos." },
+        { text: "Cilíndricas con \\(0\\le z\\le 4\\) y \\(0\\le r\\le 2\\).", correct: false, feedback: "Con \\(z\\) hasta 4 fijo describes un cilindro macizo, no la región bajo el paraboloide (el techo depende de \\(r\\))." }
+      ],
+      explanation: "Elige el sistema según la simetría, y deja que las superficies definan piso/techo en \\(z\\) (los límites interiores pueden depender de las variables exteriores)."
+    }
+  ],
+  keyTakeaways: [
+    "Esféricas del curso: \\(\\theta\\) azimutal, \\(\\varphi\\) desde el eje \\(z\\), \\(dV=\\rho^2\\operatorname{sen}\\varphi\\,d\\rho\\,d\\varphi\\,d\\theta\\).",
+    "Traducciones estrella: \\(x^2+y^2+z^2=4z\\Rightarrow\\rho=4\\cos\\varphi\\); \\(z=\\sqrt{x^2+y^2}\\Rightarrow\\varphi=\\pi/4\\).",
+    "Los exámenes piden plantear el MISMO volumen en varios sistemas: practica describir el sólido tres veces.",
+    "Volumen = \\(\\iiint 1\\,dV\\); la intersección de las superficies fija los límites (\\(r\\) o \\(\\varphi\\) de corte)."
+  ]
+},
+{
+  id: "lineas", icon: "🛤️", title: "Curvas e integrales de línea", widget: "none",
+  subtitle: "Trayectorias, trabajo, campos conservativos y TFIL (Clases 20–22)",
+  theory: [
+    { type: "para", content: "**Función vectorial** \\(\\vec r(t)=(x(t),y(t),z(t))\\): derivada componente a componente; \\(\\vec r\\,'(t)\\) es el vector tangente (velocidad), \\(\\lVert\\vec r\\,'(t)\\rVert\\) la rapidez. **Longitud de arco:** \\(l(\\gamma)=\\int_a^b\\lVert\\vec r\\,'(t)\\rVert dt\\)." },
+    { type: "formula", content: "\\int_\\gamma f\\,ds=\\int_a^b f(\\vec r(t))\\,\\lVert\\vec r\\,'(t)\\rVert\\,dt", caption: "Integral de **trayectoria** (campo escalar): masa de un alambre con densidad \\(f\\). No cambia al invertir la orientación." },
+    { type: "formula", content: "\\int_\\gamma \\vec F\\cdot d\\vec r=\\int_a^b \\vec F(\\vec r(t))\\cdot\\vec r\\,'(t)\\,dt=\\int_\\gamma P\\,dx+Q\\,dy+R\\,dz", caption: "Integral de **línea** (campo vectorial) = trabajo. \\(\\int_{-\\gamma}=-\\int_{\\gamma}\\): la orientación importa." },
+    { type: "para", content: "**Parametrizaciones de memoria:** segmento de \\(P_0\\) a \\(P_1\\): \\(\\vec r(t)=P_0+t(P_1-P_0)\\), \\(t\\in[0,1]\\). Circunferencia de radio \\(R\\): \\(\\vec r(t)=(R\\cos t,\\ R\\operatorname{sen}t)\\), \\(t\\in[0,2\\pi]\\) (antihoraria)." },
+    { type: "para", content: "**Campo conservativo:** \\(\\vec F=\\nabla f\\) para algún potencial \\(f\\). Criterio 2D: \\(P_y=Q_x\\) en una región **simplemente conexa** (sin hoyos). En \\(\\mathbb{R}^3\\): \\(\\operatorname{rot}\\vec F=\\vec 0\\) con \\(\\vec F\\) definido en todo \\(\\mathbb{R}^3\\)." },
+    { type: "formula", content: "\\int_\\gamma \\vec F\\cdot d\\vec r=f(B)-f(A)", caption: "TFIL: si \\(\\vec F=\\nabla f\\), la integral solo depende de los extremos. En curva cerrada: \\(0\\)." },
+    { type: "callout", content: "Para hallar el potencial: integra \\(P\\) respecto de \\(x\\) (la «constante» es \\(g(y)\\)), deriva respecto de \\(y\\), iguala a \\(Q\\) y despeja \\(g\\). SIEMPRE menciona «\\(\\mathbb{R}^2\\) es simplemente conexo» al aplicar el criterio: la pauta lo exige." }
+  ],
+  exercises: [
+    {
+      statement: "**(Prueba 3, 2026)** Calcula \\(\\displaystyle\\int_C (xz-yz)\\,ds\\), donde \\(C\\) es el segmento de \\(P(1,1,2)\\) a \\(Q(5,3,1)\\).",
+      steps: [
+        { prompt: "Parametriza el segmento y calcula \\(\\lVert\\vec r\\,'(t)\\rVert\\).",
+          hints: ["\\(\\vec r(t)=P+t\\,(Q-P)\\), \\(t\\in[0,1]\\)"],
+          revealLatex: "\\vec r(t)=(1+4t,\\ 1+2t,\\ 2-t),\\quad t\\in[0,1];\\qquad \\lVert\\vec r\\,'(t)\\rVert=\\sqrt{16+4+1}=\\sqrt{21}" },
+        { prompt: "Sustituye el integrando.",
+          hints: ["Factoriza: \\(xz-yz=z(x-y)\\)."],
+          revealLatex: "z(x-y)=(2-t)\\big((1+4t)-(1+2t)\\big)=(2-t)(2t)=4t-2t^2" },
+        { prompt: "Integra.",
+          hints: [],
+          revealLatex: "\\sqrt{21}\\int_0^1 (4t-2t^2)\\,dt=\\sqrt{21}\\left(2-\\frac23\\right)=\\frac{4\\sqrt{21}}{3}" }
+      ],
+      finalAnswerLatex: "\\dfrac{4\\sqrt{21}}{3}"
+    },
+    {
+      statement: "**(Prueba 3, 2026)** Sea \\(\\vec F(x,y)=\\big(y\\cos(xy)+1,\\ \\ x\\cos(xy)+2\\cos(2y)\\big)\\). Muestra que es conservativo, halla su potencial y calcula \\(\\int_C\\vec F\\cdot d\\vec r\\) para \\(C:\\ x(t)=2-\\cos(\\pi t),\\ y(t)=\\tfrac{\\pi t}{2},\\ t\\in[\\tfrac12,1]\\).",
+      steps: [
+        { prompt: "Verifica el criterio de conservatividad.",
+          hints: ["Compara \\(P_y\\) con \\(Q_x\\)."],
+          revealLatex: "\\frac{\\partial P}{\\partial y}=\\frac{\\partial Q}{\\partial x}=\\cos(xy)-xy\\operatorname{sen}(xy)",
+          explanation: "Como \\(\\mathbb{R}^2\\) es simplemente conexo y las parciales son continuas, \\(\\vec F\\) es conservativo." },
+        { prompt: "Integra \\(P\\) respecto de \\(x\\).",
+          hints: ["La «constante» de integración es una función \\(g(y)\\)."],
+          revealLatex: "f(x,y)=\\operatorname{sen}(xy)+x+g(y)" },
+        { prompt: "Ajusta \\(g(y)\\) derivando respecto de \\(y\\) e igualando a \\(Q\\).",
+          hints: [],
+          revealLatex: "f_y=x\\cos(xy)+g'(y)=x\\cos(xy)+2\\cos(2y)\\ \\Rightarrow\\ g(y)=\\operatorname{sen}(2y)",
+          explanation: "Potencial: \\(f(x,y)=\\operatorname{sen}(xy)+x+\\operatorname{sen}(2y)\\)." },
+        { prompt: "Halla los extremos de la curva (¡no hace falta recorrerla!).",
+          hints: ["Evalúa en \\(t=\\tfrac12\\) y \\(t=1\\)."],
+          revealLatex: "A=\\left(2,\\ \\tfrac{\\pi}{4}\\right)\\ (t=\\tfrac12),\\qquad B=\\left(3,\\ \\tfrac{\\pi}{2}\\right)\\ (t=1)" },
+        { prompt: "Aplica el TFIL.",
+          hints: ["\\(f(B)-f(A)\\)"],
+          revealLatex: "f(B)=\\operatorname{sen}\\tfrac{3\\pi}{2}+3+\\operatorname{sen}\\pi=2;\\quad f(A)=\\operatorname{sen}\\tfrac{\\pi}{2}+2+\\operatorname{sen}\\tfrac{\\pi}{2}=4;\\quad f(B)-f(A)=-2" }
+      ],
+      finalAnswerLatex: "\\int_C\\vec F\\cdot d\\vec r=-2"
+    }
+  ],
+  conceptual: [
+    {
+      question: "Inviertes la orientación de la curva \\(\\gamma\\). ¿Qué pasa con \\(\\int_\\gamma f\\,ds\\) y con \\(\\int_\\gamma\\vec F\\cdot d\\vec r\\)?",
+      options: [
+        { text: "La escalar (\\(ds\\)) queda igual; la vectorial (\\(d\\vec r\\)) cambia de signo.", correct: true, feedback: "Correcto: \\(ds\\) mide longitud (siempre positiva); \\(d\\vec r\\) apunta según el recorrido." },
+        { text: "Ambas cambian de signo.", correct: false, feedback: "La de trayectoria no: la masa de un alambre no depende de en qué sentido lo recorras." },
+        { text: "Ninguna cambia.", correct: false, feedback: "El trabajo sí cambia: empujar a favor o en contra del campo no es lo mismo." }
+      ],
+      explanation: "\\(\\int_{-\\gamma}f\\,ds=\\int_\\gamma f\\,ds\\) pero \\(\\int_{-\\gamma}\\vec F\\cdot d\\vec r=-\\int_\\gamma\\vec F\\cdot d\\vec r\\)."
+    },
+    {
+      question: "\\(\\vec F\\) es conservativo en \\(\\mathbb{R}^2\\) y \\(\\gamma\\) es una curva cerrada. ¿Cuánto vale \\(\\oint_\\gamma \\vec F\\cdot d\\vec r\\)?",
+      options: [
+        { text: "0, por el TFIL (los extremos coinciden).", correct: true, feedback: "Sí: \\(f(A)-f(A)=0\\). Equivalente: independencia de trayectoria." },
+        { text: "El área encerrada por \\(\\gamma\\).", correct: false, feedback: "Eso pasa con campos especiales vía Green (p. ej. \\((0,x)\\)), que NO son conservativos." },
+        { text: "Depende de la parametrización.", correct: false, feedback: "Las integrales de línea no dependen de la parametrización (solo de la curva y su orientación)." }
+      ],
+      explanation: "Conservativo ⇔ integral independiente de la trayectoria ⇔ cero en toda curva cerrada (en dominio simplemente conexo)."
+    },
+    {
+      question: "¿Por qué el criterio \\(P_y=Q_x\\) exige región **simplemente conexa**?",
+      options: [
+        { text: "Con un hoyo (p. ej. \\(\\vec F\\) singular en el origen) puede cumplirse \\(P_y=Q_x\\) y aun así \\(\\vec F\\) no ser conservativo.", correct: true, feedback: "Exacto: el contraejemplo clásico es el campo de ángulo \\(\\left(\\frac{-y}{x^2+y^2},\\frac{x}{x^2+y^2}\\right)\\)." },
+        { text: "Es solo una formalidad; en la práctica no importa.", correct: false, feedback: "Importa: la pauta descuenta si no verificas el dominio, y hay preguntas con singularidades a propósito." },
+        { text: "Porque sin ella no se puede derivar \\(P\\) y \\(Q\\).", correct: false, feedback: "Derivar se puede igual; lo que falla es la EXISTENCIA del potencial global." }
+      ],
+      explanation: "\\(P_y=Q_x\\) es condición necesaria siempre; suficiente solo en dominios sin hoyos. Verifícalo y dilo explícitamente."
+    }
+  ],
+  keyTakeaways: [
+    "\\(ds=\\lVert\\vec r\\,'(t)\\rVert dt\\): trayectoria (escalar, sin signo). \\(d\\vec r=\\vec r\\,'(t)\\,dt\\): línea/trabajo (con orientación).",
+    "Antes de integrar un campo: **¿es conservativo?** Si lo es, potencial + TFIL te ahorra toda la parametrización.",
+    "Potencial: integra \\(P\\) en \\(x\\), ajusta \\(g(y)\\) con \\(Q\\). Verifica dominio simplemente conexo.",
+    "Parametrizaciones de memoria: segmento \\(P_0+t(P_1-P_0)\\) y circunferencia \\((R\\cos t, R\\operatorname{sen}t)\\)."
+  ]
+},
+{
+  id: "teoremas", icon: "🌪️", title: "Green, Stokes y Gauss", widget: "none",
+  subtitle: "Los tres teoremas integrales + superficies (Clases 22–23)",
+  theory: [
+    { type: "formula", content: "\\oint_{\\gamma^+} P\\,dx+Q\\,dy=\\iint_D\\left(\\frac{\\partial Q}{\\partial x}-\\frac{\\partial P}{\\partial y}\\right)dA", caption: "**Green.** Hipótesis: \\(\\gamma\\) cerrada, simple, suave a trozos, **antihoraria**; \\(P,Q\\) con parciales continuas en un abierto que contiene a \\(D\\). Horaria ⇒ signo menos." },
+    { type: "formula", content: "\\text{Área}(D)=\\oint_{\\gamma^+}x\\,dy=-\\oint_{\\gamma^+}y\\,dx=\\frac12\\oint_{\\gamma^+}x\\,dy-y\\,dx", caption: "Área vía Green: elige \\((P,Q)\\) con \\(Q_x-P_y=1\\)." },
+    { type: "formula", content: "\\operatorname{rot}\\vec F=\\nabla\\times\\vec F=\\left(R_y-Q_z,\\ P_z-R_x,\\ Q_x-P_y\\right);\\qquad \\operatorname{div}\\vec F=P_x+Q_y+R_z", caption: "\\(\\operatorname{rot}(\\nabla f)=\\vec 0\\) y \\(\\operatorname{div}(\\operatorname{rot}\\vec F)=0\\) (con segundas parciales continuas)." },
+    { type: "para", content: "**Superficies:** \\(\\vec r(u,v)\\) parametriza \\(S\\); \\(T_u\\times T_v\\) es normal. Área: \\(A(S)=\\iint_D\\lVert T_u\\times T_v\\rVert dA\\). Flujo: \\(\\iint_S\\vec F\\cdot d\\vec S=\\iint_D\\vec F\\cdot(T_u\\times T_v)\\,dA\\). Para el gráfico \\(z=g(x,y)\\): \\(T_x\\times T_y=(-g_x,-g_y,1)\\) (hacia arriba)." },
+    { type: "formula", content: "\\oint_C \\vec F\\cdot d\\vec r=\\iint_S \\operatorname{rot}\\vec F\\cdot d\\vec S", caption: "**Stokes.** \\(S\\) orientada con frontera \\(C\\) coherente (regla de la mano derecha); componentes de \\(\\vec F\\) con parciales continuas en un abierto que contiene a \\(S\\)." },
+    { type: "formula", content: "\\iint_{S=\\partial E}\\vec F\\cdot d\\vec S=\\iiint_E \\operatorname{div}\\vec F\\,dV", caption: "**Divergencia (Gauss).** \\(E\\) sólido simple, \\(S\\) su frontera **cerrada** con normal **exterior**." },
+    { type: "callout", content: "Ritual de la pauta: (1) verifica la orientación del normal calculado **evaluándolo en un punto**; (2) si la orientación pedida es la contraria, cambia el signo; (3) Gauss solo con superficie cerrada — si falta una tapa, ciérrala y **resta** el flujo de la tapa." }
+  ],
+  guidedDerivation: {
+    title: "El área como integral de línea",
+    intro: "La pregunta teórica de la Prueba 3: por qué \\(\\text{Área}=\\frac12\\oint x\\,dy-y\\,dx\\).",
+    steps: [
+      { prompt: "Busca \\(P,Q\\) tales que \\(Q_x-P_y=1\\).",
+        hints: ["Prueba \\((0,x)\\), \\((-y,0)\\) o una mezcla simétrica."],
+        revealLatex: "(P,Q)=\\left(-\\tfrac{y}{2},\\ \\tfrac{x}{2}\\right)\\ \\Rightarrow\\ Q_x-P_y=\\tfrac12+\\tfrac12=1" },
+      { prompt: "Aplica Green con esa elección.",
+        hints: [],
+        revealLatex: "\\frac12\\oint_{\\gamma^+}x\\,dy-y\\,dx=\\iint_D 1\\,dA=\\text{Área}(D)" },
+      { prompt: "Compruébalo con la circunferencia \\(x=R\\cos t,\\ y=R\\operatorname{sen}t\\).",
+        hints: ["\\(dx=-R\\operatorname{sen}t\\,dt,\\ dy=R\\cos t\\,dt\\)"],
+        revealLatex: "\\frac12\\int_0^{2\\pi}\\left(R^2\\cos^2 t+R^2\\operatorname{sen}^2 t\\right)dt=\\frac12\\int_0^{2\\pi}R^2\\,dt=\\pi R^2",
+        explanation: "El integrando se colapsa a \\(R^2\\): media vuelta de álgebra y sale el área del círculo. La Prueba 3 pidió esto mismo con un rectángulo." }
+    ]
+  },
+  exercises: [
+    {
+      statement: "**(Examen)** \\(C:\\ x^2+y^2=a^2\\) orientada positivamente. Calcula \\(\\displaystyle\\oint_C P\\,dx+Q\\,dy\\) con \\(P=x\\ln(y^2+1)-x^2(y-2)\\) y \\(Q=\\dfrac{x^2y}{y^2+1}+y^2(x-1)\\).",
+      steps: [
+        { prompt: "Integrar directo sería horrible. Verifica las hipótesis de Green y calcula \\(Q_x-P_y\\).",
+          hints: ["Los términos feos (\\(\\ln\\) y la fracción) se cancelan entre sí."],
+          revealLatex: "Q_x=\\frac{2xy}{y^2+1}+y^2;\\qquad P_y=\\frac{2xy}{y^2+1}-x^2\\ \\Longrightarrow\\ Q_x-P_y=x^2+y^2" },
+        { prompt: "Pasa la integral doble a polares.",
+          hints: ["Disco de radio \\(a\\): \\(r\\in[0,a],\\ \\theta\\in[0,2\\pi]\\); no olvides el \\(r\\)."],
+          revealLatex: "\\iint_D (x^2+y^2)\\,dA=\\int_0^{2\\pi}\\!\\!\\int_0^{a} r^2\\cdot r\\,dr\\,d\\theta=2\\pi\\cdot\\frac{a^4}{4}" }
+      ],
+      finalAnswerLatex: "\\oint_C P\\,dx+Q\\,dy=\\dfrac{\\pi a^4}{2}"
+    },
+    {
+      statement: "**(Examen 2024)** Usando Stokes, calcula el trabajo de \\(\\vec F=(x-y,\\ y+x,\\ z+y+1)\\) al recorrer el borde de \\(S:\\ z=9-x^2-y^2\\), \\(0\\le z\\le 5\\).",
+      steps: [
+        { prompt: "Calcula el rotacional.",
+          hints: ["Determinante \\(3\\times 3\\) con \\(\\nabla\\) en la segunda fila."],
+          revealLatex: "\\operatorname{rot}\\vec F=(1,\\ 0,\\ 2)" },
+        { prompt: "¿Sobre qué región del plano \\(XY\\) vive \\(S\\)?",
+          hints: ["\\(z=0\\Rightarrow x^2+y^2=9\\); \\(z=5\\Rightarrow x^2+y^2=4\\)."],
+          revealLatex: "D:\\ 4\\le x^2+y^2\\le 9\\quad (\\text{anillo})" },
+        { prompt: "Escribe el vector normal (hacia arriba) del gráfico \\(z=g(x,y)\\).",
+          hints: ["\\((-g_x,\\ -g_y,\\ 1)\\) con \\(g=9-x^2-y^2\\)."],
+          revealLatex: "\\vec r_x\\times\\vec r_y=(2x,\\ 2y,\\ 1)" },
+        { prompt: "Integra \\(\\operatorname{rot}\\vec F\\cdot(2x,2y,1)\\) sobre el anillo.",
+          hints: ["El término \\(2x\\) se anula al integrar en \\(\\theta\\) (simetría)."],
+          revealLatex: "\\iint_D (2x+2)\\,dA=0+2\\,\\text{Área}(D)=2\\,(9\\pi-4\\pi)=10\\pi" }
+      ],
+      finalAnswerLatex: "W=10\\pi"
+    }
+  ],
+  conceptual: [
+    {
+      question: "Aplicas Green con \\(\\gamma\\) recorrida en sentido **horario**. ¿Qué debes hacer?",
+      options: [
+        { text: "Anteponer un signo menos: \\(\\oint_{\\gamma^-}=-\\iint_D(Q_x-P_y)\\,dA\\).", correct: true, feedback: "Correcto: el teorema está enunciado para orientación positiva (antihoraria)." },
+        { text: "Nada, Green no depende de la orientación.", correct: false, feedback: "Sí depende: la integral de línea vectorial cambia de signo con la orientación." },
+        { text: "Intercambiar \\(P\\) y \\(Q\\).", correct: false, feedback: "Eso cambia el integrando por completo; la corrección correcta es el signo." }
+      ],
+      explanation: "Orientación positiva = región a la IZQUIERDA al caminar por la curva. Horaria ⇒ multiplica por \\(-1\\)."
+    },
+    {
+      question: "Quieres el flujo de \\(\\vec F\\) que SALE del sólido entre el paraboloide \\(z=x^2+y^2\\) y el plano \\(z=4\\). ¿Método más corto?",
+      options: [
+        { text: "Divergencia: \\(\\iiint_E\\operatorname{div}\\vec F\\,dV\\) (la superficie es cerrada: paraboloide + tapa).", correct: true, feedback: "Sí: es la frontera completa de un sólido, con normal exterior — Gauss directo (y \\(E\\) en cilíndricas)." },
+        { text: "Stokes sobre el paraboloide.", correct: false, feedback: "Stokes relaciona el flujo del ROTACIONAL con la circulación del borde; aquí quieres el flujo de \\(\\vec F\\) mismo." },
+        { text: "Parametrizar cada cara y sumar flujos, siempre.", correct: false, feedback: "Se puede, pero es el camino largo; con superficie cerrada Gauss reduce todo a una integral triple." }
+      ],
+      explanation: "Superficie CERRADA + flujo de \\(\\vec F\\) ⇒ Gauss. Superficie con borde + flujo de \\(\\operatorname{rot}\\vec F\\) (o trabajo en el borde) ⇒ Stokes."
+    },
+    {
+      question: "En Stokes calculaste \\(T_u\\times T_v\\) y la orientación pedida es la contraria. ¿Qué haces?",
+      options: [
+        { text: "Uso \\(-(T_u\\times T_v)\\) (o cambio el signo del resultado) y lo digo explícitamente.", correct: true, feedback: "Eso pide la pauta: verificar en un punto hacia dónde apunta el normal y corregir con el signo." },
+        { text: "Da igual, el flujo del rotacional no depende de la normal.", correct: false, feedback: "Depende totalmente: invertir la normal invierte el signo del flujo." },
+        { text: "Reparametrizo la superficie desde cero.", correct: false, feedback: "Innecesario: basta el signo (aunque reparametrizar también es válido)." }
+      ],
+      explanation: "Regla de la mano derecha: pulgar = normal, dedos = sentido del borde. Verifica la dirección del normal evaluándolo en un punto concreto."
+    }
+  ],
+  keyTakeaways: [
+    "Campo feo + curva cerrada en el plano = **Green** (el integrando \\(Q_x-P_y\\) casi siempre se simplifica brutalmente).",
+    "**Stokes**: cambia una superficie complicada por su borde (o al revés). El examen pide ambos sentidos y que coincidan.",
+    "**Gauss**: solo superficies cerradas, normal exterior; si falta tapa, se agrega y se resta su flujo.",
+    "Gráfico \\(z=g(x,y)\\): normal hacia arriba \\((-g_x,-g_y,1)\\). Términos \\(x\\) o \\(\\cos\\theta\\) sueltos suelen anularse por simetría al integrar en \\(\\theta\\)."
+  ]
+},
+{
+  id: "simulacro", icon: "🏁", title: "Simulacro", widget: "none",
+  subtitle: "6 preguntas tipo examen — 120 minutos reales serían 5–6 de desarrollo",
+  theory: [
+    { type: "para", content: "**Formato real:** 5–6 preguntas de desarrollo, 120 min, sin calculadora. La rúbrica da puntos por **cada paso**: plantear, justificar hipótesis del teorema, calcular, concluir. Intenta resolver cada pregunta en papel ANTES de mirar las opciones." },
+    { type: "callout", content: "Los seis temas de abajo replican la distribución real de las 5 evaluaciones del curso: continuidad/límites, Lagrange, integral triple, campo conservativo, Stokes y superficies." }
+  ],
+  conceptual: [
+    {
+      question: "**[Continuidad]** \\(f(x,y)=\\dfrac{2xy^2}{x^2+y^2}\\) si \\((x,y)\\neq(0,0)\\), \\(f(0,0)=0\\). ¿Es continua en el origen?",
+      options: [
+        { text: "Sí: en polares \\(f=2r\\cos\\theta\\operatorname{sen}^2\\theta\\to 0=f(0,0)\\).", correct: true, feedback: "Correcto: \\(H(r)=2r\\to 0\\) y \\(G(\\theta)=\\cos\\theta\\operatorname{sen}^2\\theta\\) acotada." },
+        { text: "No: por \\(y=mx\\) el límite depende de \\(m\\).", correct: false, feedback: "Calcula: por \\(y=mx\\) queda \\(\\frac{2m^2x}{1+m^2}\\to 0\\) para todo \\(m\\); y polares confirma que el límite ES 0." },
+        { text: "No: el límite existe pero vale 2.", correct: false, feedback: "El factor \\(2r\\to 0\\) mata todo: el límite es 0, que coincide con \\(f(0,0)\\)." }
+      ],
+      explanation: "Pregunta 1 del examen anterior. Bonus de esa pregunta: el plano tangente en \\((1,1,1)\\) resulta \\(z=y\\) (pues \\(f_x(1,1)=0\\), \\(f_y(1,1)=1\\))."
+    },
+    {
+      question: "**[Lagrange]** Extremos de \\(f(x,y)=x^2+y^2\\) sujeta a \\(x^2-2x+y^2=3\\). ¿El valor máximo es…?",
+      options: [
+        { text: "9, alcanzado en \\((3,0)\\) (y el mínimo es 1 en \\((-1,0)\\)).", correct: true, feedback: "Correcto: de \\(2y=2\\lambda y\\) sale \\(y=0\\) o \\(\\lambda=1\\) (imposible); con \\(y=0\\): \\(x^2-2x-3=0\\Rightarrow x=3,-1\\)." },
+        { text: "3, alcanzado en \\((1,1)\\).", correct: false, feedback: "\\((1,1)\\) ni siquiera satisface la restricción: \\(1-2+1=0\\neq 3\\). Bifurca los casos del sistema." },
+        { text: "No hay máximo: la restricción no es acotada.", correct: false, feedback: "La restricción es \\((x-1)^2+y^2=4\\): una circunferencia (compacta) — Weierstrass garantiza máx y mín." }
+      ],
+      explanation: "Ejemplo de la Clase 13. El sistema bifurca (\\(y=0\\) o \\(\\lambda=1\\)); solo la rama \\(y=0\\) da soluciones: \\(f(3,0)=9\\) máx, \\(f(-1,0)=1\\) mín."
+    },
+    {
+      question: "**[Integral triple]** Volumen del sólido entre el cono \\(x=\\sqrt{y^2+z^2}\\) y el paraboloide \\(x=6-y^2-z^2\\):",
+      options: [
+        { text: "\\(\\dfrac{32\\pi}{3}\\)", correct: true, feedback: "Correcto: en polares del plano \\(yz\\), la intersección da \\(6-r^2=r\\Rightarrow r=2\\); \\(V=2\\pi\\int_0^2 r(6-r^2-r)dr=\\frac{32\\pi}{3}\\)." },
+        { text: "\\(8\\pi\\)", correct: false, feedback: "Ese es el volumen del sólido esfera–cono clásico (\\(\\rho=4\\cos\\varphi\\), \\(\\varphi\\le\\pi/4\\)); aquí es cono + paraboloide." },
+        { text: "\\(36\\pi\\)", correct: false, feedback: "Revisa la intersección: \\(6-r^2=r\\) factoriza \\((r+3)(r-2)=0\\), o sea \\(r=2\\) (no 3), y el integrando es \\(r(6-r^2-r)\\)." }
+      ],
+      explanation: "Examen 2024, Q4. El eje de simetría es \\(x\\): trata \\(x\\) como la «altura» y usa polares en \\((y,z)\\). Piso: cono \\(x=r\\); techo: paraboloide \\(x=6-r^2\\)."
+    },
+    {
+      question: "**[Conservativo]** \\(\\displaystyle\\int_C (10x^4-2xy^3)\\,dx-3x^2y^2\\,dy\\) a lo largo de la curva \\(x^4-6xy^2=4y^2\\) desde \\((0,0)\\) hasta \\((2,1)\\):",
+      options: [
+        { text: "60 — el campo es conservativo con potencial \\(f=2x^5-x^2y^3\\); la curva no importa.", correct: true, feedback: "Correcto: \\(P_y=Q_x=-6xy^2\\); TFIL: \\(f(2,1)-f(0,0)=64-4=60\\)." },
+        { text: "Imposible sin parametrizar la curva dada.", correct: false, feedback: "Esa curva es intencionalmente imposible de parametrizar: la GRACIA es notar que el campo es conservativo." },
+        { text: "0, porque \\(P_y=Q_x\\).", correct: false, feedback: "\\(P_y=Q_x\\) hace que la integral sea independiente de la trayectoria, no que valga 0 (la curva no es cerrada)." }
+      ],
+      explanation: "Examen 2024, Q5. Cuando la curva es «impossible», sospecha campo conservativo: potencial + TFIL. La pauta verifica con el segmento recto: mismo resultado, 60."
+    },
+    {
+      question: "**[Stokes]** \\(\\vec F=(-(y+2z),\\,0,\\,-1)\\) y \\(C\\) es la circunferencia de radio \\(R/2\\) en el plano \\(z=0\\), antihoraria vista desde arriba. \\(\\oint_C\\vec F\\cdot d\\vec r=\\) …",
+      options: [
+        { text: "\\(\\dfrac{\\pi R^2}{4}\\)", correct: true, feedback: "Correcto: \\(\\operatorname{rot}\\vec F=(0,-2,1)\\); sobre el disco con normal \\((0,0,1)\\): \\(\\iint 1\\,dA=\\pi(R/2)^2\\). Directo da lo mismo: \\(\\int_0^{2\\pi}\\frac{R^2}{4}\\operatorname{sen}^2\\theta\\,d\\theta=\\frac{\\pi R^2}{4}\\)." },
+        { text: "0, porque el campo no depende de \\(x\\).", correct: false, feedback: "La circulación depende del rotacional, y \\(\\operatorname{rot}\\vec F=(0,-2,1)\\neq\\vec 0\\): su componente \\(z\\) atraviesa el disco." },
+        { text: "\\(\\pi R^2\\)", correct: false, feedback: "El radio del paralelo es \\(R/2\\), así que el área del disco es \\(\\pi R^2/4\\), no \\(\\pi R^2\\)." }
+      ],
+      explanation: "Prueba 3, Q4 (el «paralelo terrestre»). Patrón favorito del profesor: calcular directo Y con Stokes, y verificar que coinciden."
+    },
+    {
+      question: "**[Superficies]** \\(S\\): parte del cilindro \\(x^2+y^2=4\\) entre \\(z=-1\\) y \\(z=3\\). Su área es…",
+      options: [
+        { text: "\\(16\\pi\\)", correct: true, feedback: "Correcto: \\(\\vec r(\\theta,z)=(2\\cos\\theta,2\\operatorname{sen}\\theta,z)\\), \\(\\lVert T_\\theta\\times T_z\\rVert=2\\); \\(A=\\int_{-1}^{3}\\!\\int_0^{2\\pi}2\\,d\\theta\\,dz=16\\pi\\). (= circunferencia \\(4\\pi\\) × altura 4.)" },
+        { text: "\\(8\\pi\\)", correct: false, feedback: "La altura es \\(3-(-1)=4\\), no 2: \\(A=2\\pi\\cdot 2\\cdot 4=16\\pi\\)." },
+        { text: "\\(4\\pi\\cdot 4=16\\pi^2\\)", correct: false, feedback: "Cuidado con los \\(\\pi\\): perímetro \\(2\\pi r=4\\pi\\) por altura 4 da \\(16\\pi\\), no \\(16\\pi^2\\)." }
+      ],
+      explanation: "Prueba 3, Q3. El mismo problema seguía con el flujo de \\(\\vec F=(xz,xy,yz)\\) por \\(S\\): también da \\(16\\pi\\). Parametriza cilindros SIEMPRE con \\((\\theta,z)\\)."
+    }
+  ],
+  keyTakeaways: [
+    "Si terminaste esto sin mirar soluciones: estás listo para el formato real. Si no, vuelve al módulo del tema que falló.",
+    "En el examen: escribe TODOS los pasos (la rúbrica puntúa por paso), nombra los teoremas y verifica hipótesis y orientaciones.",
+    "Administra el tiempo: 6 preguntas en 120 min = 20 min por pregunta, con 2–3 ítems progresivos cada una."
+  ]
+}
+];</script>
+<script>
+"use strict";
+/* ============================================================ helpers */
+const $ = (s,r)=> (r||document).querySelector(s);
+const el = (t,c,txt)=>{const e=document.createElement(t); if(c)e.className=c; if(txt!=null)e.textContent=txt; return e;};
+function escapeHTML(s){return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function md(s){ // tiny markdown-lite over already math-delimited text
+  let h = escapeHTML(s);
+  h = h.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>');
+  h = h.replace(/`([^`]+?)`/g,'<code>$1</code>');
+  return h;
+}
+function typeset(node){
+  if(window.MathJax && MathJax.typesetPromise){
+    try{ if(MathJax.typesetClear) MathJax.typesetClear([node]); }catch(e){}
+    return MathJax.typesetPromise([node]).catch(()=>{});
+  }
+  return Promise.resolve();
+}
+function dispLatex(latex){ // display formula node
+  const d = el('div','formula');
+  const span = el('span'); span.textContent = '\\[' + (latex||'') + '\\]';
+  d.appendChild(span);
+  return d;
+}
+
+/* ============================================================ state */
+const MODULES = (window.MODULES_DATA && window.MODULES_DATA.length) ? window.MODULES_DATA : [];
+const APP_ID='multiexam';
+const LS_PROG='estudio_'+APP_ID+'_prog', LS_THEME='estudio_'+APP_ID+'_theme', LS_LAST='estudio_'+APP_ID+'_last';
+let progress = new Set();
+try{ progress = new Set(JSON.parse(localStorage.getItem(LS_PROG)||'[]')); }catch(e){}
+let current = 0;
+try{ const l=parseInt(localStorage.getItem(LS_LAST)); if(!isNaN(l)) current=l; }catch(e){}
+function saveProg(){ try{localStorage.setItem(LS_PROG, JSON.stringify([...progress]));}catch(e){} }
+
+const contentEl = $('#content'), navList = $('#navList');
+window.__retypeset = ()=> typeset(contentEl);
+
+/* ============================================================ nav */
+function renderNav(){
+  navList.innerHTML='';
+  MODULES.forEach((m,i)=>{
+    const it = el('div','navItem'+(i===current?' active':'')+(progress.has(m.id)?' done':''));
+    it.innerHTML = `<span class="ic">${m.icon||'•'}</span><span class="nm">${escapeHTML(m.title)}<small>${escapeHTML(m.subtitle||'')}</small></span><span class="chk">✓</span>`;
+    it.onclick=()=>{ go(i); closeDrawer(); };
+    navList.appendChild(it);
+  });
+  const pct = MODULES.length? Math.round(100*progress.size/MODULES.length):0;
+  $('#progFill').style.width=pct+'%'; $('#progTxt').textContent=pct+'%';
+}
+
+/* ============================================================ render module */
+function go(i){ current=Math.max(0,Math.min(MODULES.length-1,i)); try{localStorage.setItem(LS_LAST,current);}catch(e){} renderModule(); renderNav(); window.scrollTo({top:0,behavior:'smooth'}); }
+
+function sectionWrap(titleHTML){
+  const s=el('section','section'); const t=el('div','stitle'); t.innerHTML=titleHTML; s.appendChild(t); return s;
+}
+
+function renderModule(){
+  const m=MODULES[current]; if(!m){ contentEl.innerHTML='<p style="color:var(--muted)">Cargando contenido…</p>'; return; }
+  contentEl.innerHTML='';
+  // head
+  const head=el('div','mhead');
+  head.innerHTML=`<div class="kick">Módulo ${current+1} de ${MODULES.length}</div>
+    <h1><span class="e">${m.icon||''}</span>${escapeHTML(m.title)}</h1><p>${escapeHTML(m.subtitle||'')}</p>`;
+  contentEl.appendChild(head);
+
+  // theory
+  if(m.theory && m.theory.length){
+    const s=sectionWrap('📖 Teoría'); const card=el('div','card');
+    m.theory.forEach(b=>{
+      if(b.type==='formula'){ card.appendChild(dispLatex(b.content)); if(b.caption){const c=el('span','cap');c.innerHTML=md(b.caption);card.lastChild.appendChild(c);} }
+      else if(b.type==='callout'){ const c=el('div','callout'); c.innerHTML=md(b.content); card.appendChild(c); }
+      else { const p=el('div','para'); p.innerHTML=md(b.content); card.appendChild(p); }
+    });
+    s.appendChild(card); contentEl.appendChild(s);
+  }
+
+  // widget
+  if(m.widget && m.widget!=='none' && WIDGETS[m.widget]){
+    const s=sectionWrap('🧪 Explora'); const w=el('div','widget');
+    s.appendChild(w); contentEl.appendChild(s);
+    try{ WIDGETS[m.widget](w); }catch(e){ w.innerHTML='<p style="color:var(--muted)">Widget no disponible.</p>'; console.error(e); }
+  }
+
+  // guided derivation
+  if(m.guidedDerivation){
+    const gd=m.guidedDerivation;
+    const s=sectionWrap('✍️ '+escapeHTML(gd.title||'Deducción guiada'));
+    if(gd.intro){ const p=el('div','card'); p.innerHTML=md(gd.intro); s.appendChild(p); }
+    (gd.steps||[]).forEach((st,idx)=> s.appendChild(stepCard(st,idx,'deriv')) );
+    contentEl.appendChild(s);
+  }
+
+  // exercises
+  if(m.exercises && m.exercises.length){
+    const s=sectionWrap('📝 Ejercicios paso a paso');
+    m.exercises.forEach((ex,ei)=>{
+      const card=el('div','card');
+      const stm=el('div','para'); stm.innerHTML='<strong>Ejercicio '+(ei+1)+'.</strong> '+md(ex.statement); card.appendChild(stm);
+      (ex.steps||[]).forEach((st,si)=> card.appendChild(stepCard(st,si,'ex')) );
+      if(ex.finalAnswerLatex){
+        const fa=el('div','finalans'); fa.innerHTML='<span class="lab">✅ Resultado</span>';
+        fa.appendChild(dispLatex(ex.finalAnswerLatex)); card.appendChild(fa);
+      }
+      s.appendChild(card);
+    });
+    contentEl.appendChild(s);
+  }
+
+  // conceptual
+  if(m.conceptual && m.conceptual.length){
+    const s=sectionWrap('🧠 Preguntas conceptuales');
+    m.conceptual.forEach((q,qi)=> s.appendChild(quizCard(q,qi)) );
+    contentEl.appendChild(s);
+  }
+
+  // takeaways
+  if(m.keyTakeaways && m.keyTakeaways.length){
+    const s=sectionWrap('⭐ Ideas clave'); const ul=el('ul','takeaways');
+    m.keyTakeaways.forEach(t=>{ const li=el('li'); li.innerHTML=md(t); ul.appendChild(li); });
+    s.appendChild(ul); contentEl.appendChild(s);
+  }
+
+  // mark done + footer nav
+  const done=progress.has(m.id);
+  const mk=el('button','btn primary markdone', done?'✓ Repasado — ¡bien!':'Marcar este módulo como repasado');
+  mk.onclick=()=>{ if(progress.has(m.id))progress.delete(m.id); else progress.add(m.id); saveProg(); renderNav(); renderModule(); window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'}); };
+  contentEl.appendChild(mk);
+
+  const fn=el('div','fnav');
+  const prev=el('button','btn ghost','← Anterior'); prev.disabled=current===0; prev.onclick=()=>go(current-1);
+  const next=el('button','btn','Siguiente →'); next.disabled=current===MODULES.length-1; next.onclick=()=>go(current+1);
+  fn.appendChild(prev); fn.appendChild(next); contentEl.appendChild(fn);
+
+  typeset(contentEl);
+}
+
+/* ---- step card (guided + exercise) with progressive hints + reveal ---- */
+function stepCard(st,idx,kind){
+  const c=el('div','step');
+  const qn=el('div','qn');
+  qn.appendChild(el('div','badge', String(idx+1)));
+  const pr=el('div'); pr.className='prompt'; pr.innerHTML=md(st.prompt); qn.appendChild(pr);
+  c.appendChild(qn);
+
+  const hints=st.hints||[]; let shown=0;
+  const hb=el('div','hintbox');
+  const ctrls=el('div','row'); ctrls.style.marginTop='10px';
+  const hintBtn=el('button','btn sm ghost', hints.length?'💡 Pista':'');
+  const revBtn=el('button','btn sm', kind==='ex'?'Ver solución del paso':'Ver paso');
+  if(hints.length) ctrls.appendChild(hintBtn); ctrls.appendChild(revBtn);
+  c.appendChild(ctrls); c.appendChild(hb);
+
+  hintBtn.onclick=()=>{
+    if(shown>=hints.length) return;
+    const h=el('div','hint'); h.innerHTML='<span class="lab">Pista '+(shown+1)+'</span>'+md(hints[shown]); hb.appendChild(h); typeset(h);
+    shown++;
+    if(shown>=hints.length){ hintBtn.textContent='No hay más pistas'; hintBtn.disabled=true; }
+  };
+
+  const rev=el('div','reveal');
+  const ans=el('div','ans'); ans.appendChild(dispLatex(st.revealLatex!=null?st.revealLatex:st.answerLatex||''));
+  rev.appendChild(ans);
+  if(st.explanation){ const ex=el('div','exp'); ex.innerHTML=md(st.explanation); rev.appendChild(ex); }
+  c.appendChild(rev);
+  revBtn.onclick=()=>{ const open=rev.classList.toggle('show'); revBtn.textContent= open?'Ocultar':(kind==='ex'?'Ver solución del paso':'Ver paso'); if(open) typeset(rev); };
+  return c;
+}
+
+/* ---- quiz card ---- */
+function quizCard(q,qi){
+  const c=el('div','quiz');
+  const qq=el('div','q'); qq.innerHTML='<strong>'+(qi+1)+'.</strong> '+md(q.question); c.appendChild(qq);
+  const exp=el('div','qexp'); exp.innerHTML='<span class="lab">Explicación</span>'+md(q.explanation||'');
+  let answered=false;
+  (q.options||[]).forEach(o=>{
+    const op=el('div','opt');
+    op.innerHTML='<span class="mk"></span><div><div class="otext"></div><div class="fb"></div></div>';
+    $('.otext',op).innerHTML=md(o.text); $('.fb',op).innerHTML=md(o.feedback||'');
+    op.onclick=()=>{
+      if(answered && o.correct===false) { return; }
+      // allow exploring: lock only the act of marking; we lock after first pick
+      if(answered) return;
+      answered=true;
+      [...c.querySelectorAll('.opt')].forEach(x=>x.classList.add('locked'));
+      // mark all correct ones
+      (q.options||[]).forEach((oo,k)=>{ const node=c.querySelectorAll('.opt')[k];
+        if(oo.correct){ node.classList.add('correct'); node.querySelector('.mk').textContent='✓'; }
+      });
+      if(!o.correct){ op.classList.add('wrong'); op.querySelector('.mk').textContent='✕'; }
+      op.classList.add('show-fb');
+      // also show feedback of the correct one
+      (q.options||[]).forEach((oo,k)=>{ if(oo.correct){ c.querySelectorAll('.opt')[k].classList.add('show-fb'); }});
+      exp.classList.add('show'); typeset(c);
+    };
+    c.appendChild(op);
+  });
+  c.appendChild(exp);
+  return c;
+}
+
+/* ============================================================ canvas util */
+function setupCanvas(host,height){
+  const cv=el('canvas','wcanvas'); cv.style.height=height+'px'; host.appendChild(cv);
+  const ctx=cv.getContext('2d');
+  function size(){ const dpr=window.devicePixelRatio||1; const w=cv.clientWidth||300, h=cv.clientHeight||height;
+    cv.width=Math.round(w*dpr); cv.height=Math.round(h*dpr); ctx.setTransform(dpr,0,0,dpr,0,0); return {w,h,ctx}; }
+  return {cv,ctx,size};
+}
+function cssVar(n){ return getComputedStyle(document.documentElement).getPropertyValue(n).trim()||'#888'; }
+function whead(host,title,tag){ const h=el('div','whead'); h.innerHTML=`<span>${title}</span>`+(tag?`<span class="tag">${tag}</span>`:''); host.appendChild(h); }
+function ctrlRow(host){ const r=el('div','wctrls'); host.appendChild(r); return r; }
+function rangeField(label, min,max,val,step,oninput){
+  const f=el('label','field'); const sp=el('span'); sp.textContent=label;
+  const inp=el('input'); inp.type='range'; inp.min=min;inp.max=max;inp.value=val;inp.step=step;
+  const out=el('b'); out.textContent=(+val).toFixed(step<1?2:0);
+  inp.oninput=()=>{ out.textContent=(+inp.value).toFixed(step<1?2:0); oninput(+inp.value); };
+  f.appendChild(sp); f.appendChild(inp); f.appendChild(out); return {f,inp,out};
+}
+function segmented(host,opts,initial,onpick){
+  const s=el('div','seg'); opts.forEach((o,i)=>{ const b=el('button',i===initial?'on':'',o.label);
+    b.onclick=()=>{ [...s.children].forEach(c=>c.classList.remove('on')); b.classList.add('on'); onpick(o.value,i); };
+    s.appendChild(b); }); host.appendChild(s); return s;
+}
+
+/* ============================================================ WIDGETS */
+const WIDGETS={};
+
+/* --- Módulo límites: el valor de f según la trayectoria de acercamiento --- */
+WIDGETS['limite-trayectorias']=function(host){
+  whead(host,'Límite según la trayectoria','(x,y) → (0,0)');
+  const {cv,ctx,size}=setupCanvas(host,300);
+  const readout=el('div','readout'); host.appendChild(readout);
+  const ctr=ctrlRow(host);
+  let fun='A', deg=30;
+  segmented(ctr,[{label:'xy/(x²+y²)',value:'A'},{label:'x²y²/(x²+y²)',value:'B'}],0,(v)=>{fun=v;draw();});
+  ctr.appendChild(rangeField('θ (°)',0,180,30,1,v=>{deg=v;draw();}).f);
+  function g(t,th){ const c=Math.cos(th), s=Math.sin(th);
+    if(fun==='A') return c*s;
+    return t*t*c*c*s*s;
+  }
+  function draw(){
+    const {w,h}=size(); ctx.clearRect(0,0,w,h);
+    const th=deg*Math.PI/180;
+    // panel izquierdo: el plano con el rayo de acercamiento
+    const ps=Math.min(h-24, Math.max(110,w*0.34)), px=10, py=(h-ps)/2;
+    const cx=px+ps/2, cy=py+ps/2;
+    ctx.strokeStyle=cssVar('--border'); ctx.lineWidth=1;
+    ctx.strokeRect(px,py,ps,ps);
+    ctx.beginPath(); ctx.moveTo(px,cy); ctx.lineTo(px+ps,cy); ctx.moveTo(cx,py); ctx.lineTo(cx,py+ps); ctx.stroke();
+    ctx.strokeStyle=cssVar('--accent'); ctx.lineWidth=2.4;
+    const rx=Math.cos(th)*ps*0.44, ry=Math.sin(th)*ps*0.44;
+    ctx.beginPath(); ctx.moveTo(cx+rx,cy-ry); ctx.lineTo(cx,cy); ctx.stroke();
+    ctx.fillStyle=cssVar('--bad'); ctx.beginPath(); ctx.arc(cx,cy,4,0,7); ctx.fill();
+    // panel derecho: g(t)=f(t cosθ, t senθ) para t∈(0,1]
+    const gx=px+ps+26, gw=Math.max(60,w-gx-14), gy=py, gh=ps;
+    const vmax=0.6;
+    const X=t=> gx+t*gw, Y=v=> gy+gh/2-(v/vmax)*(gh/2);
+    ctx.strokeStyle=cssVar('--border'); ctx.lineWidth=1;
+    ctx.beginPath(); ctx.moveTo(gx,Y(0)); ctx.lineTo(gx+gw,Y(0)); ctx.moveTo(gx,gy); ctx.lineTo(gx,gy+gh); ctx.stroke();
+    const L=(fun==='A')? Math.cos(th)*Math.sin(th) : 0;
+    ctx.strokeStyle=cssVar('--warn'); ctx.setLineDash([5,4]);
+    ctx.beginPath(); ctx.moveTo(gx,Y(L)); ctx.lineTo(gx+gw,Y(L)); ctx.stroke(); ctx.setLineDash([]);
+    ctx.strokeStyle=cssVar('--accent2'); ctx.lineWidth=2.4; ctx.beginPath();
+    for(let i=1;i<=120;i++){ const t=i/120; const v=g(t,th); (i===1?ctx.moveTo:ctx.lineTo).call(ctx,X(t),Y(v)); }
+    ctx.stroke();
+    // etiquetas
+    ctx.fillStyle=cssVar('--muted'); ctx.font='11px sans-serif';
+    ctx.fillText('plano xy', px+4, py+14);
+    ctx.fillText('f a lo largo del rayo (t → 0 es acercarse)', gx+4, gy+14);
+    const Ltxt=L.toFixed(3);
+    readout.innerHTML=(fun==='A')
+      ? 'Rayo de ángulo \\(\\theta='+deg+'^\\circ\\): el valor es constante \\(=\\cos\\theta\\,\\operatorname{sen}\\theta='+Ltxt+'\\). Mueve \\(\\theta\\): el valor <b>cambia con la dirección ⇒ el límite NO existe</b>.'
+      : 'Rayo de ángulo \\(\\theta='+deg+'^\\circ\\): \\(f=t^2\\cos^2\\theta\\,\\operatorname{sen}^2\\theta\\to 0\\) para <b>todo</b> \\(\\theta\\). Criterio polar: \\(H(r)=r^2\\to 0\\), \\(G(\\theta)\\) acotada ⇒ <b>el límite ES 0</b>.';
+    typeset(readout);
+  }
+  requestAnimationFrame(draw); window.addEventListener('resize',()=>requestAnimationFrame(draw));
+};
+
+/* --- Módulo gradiente: derivada direccional sobre curvas de nivel --- */
+WIDGETS['gradiente-direccional']=function(host){
+  whead(host,'Derivada direccional en vivo','f(x,y)=x²+2y² en a=(1,1)');
+  const {cv,ctx,size}=setupCanvas(host,320);
+  const readout=el('div','readout'); host.appendChild(readout);
+  const ctr=ctrlRow(host);
+  let deg=63;
+  ctr.appendChild(rangeField('α (°)',0,360,63,1,v=>{deg=v;draw();}).f);
+  const GX=2, GY=4, NG=Math.sqrt(20);
+  function draw(){
+    const {w,h}=size(); ctx.clearRect(0,0,w,h);
+    const s=Math.min(w/7.2,h/5.4);
+    const cx=w/2-1*s, cy=h/2+1*s;
+    const X=x=>cx+x*s, Y=y=>cy-y*s;
+    function arrow(x0,y0,x1,y1,color,lw){
+      ctx.strokeStyle=color; ctx.fillStyle=color; ctx.lineWidth=lw;
+      ctx.beginPath(); ctx.moveTo(X(x0),Y(y0)); ctx.lineTo(X(x1),Y(y1)); ctx.stroke();
+      const ang=Math.atan2(Y(y1)-Y(y0), X(x1)-X(x0));
+      ctx.beginPath(); ctx.moveTo(X(x1),Y(y1));
+      ctx.lineTo(X(x1)-10*Math.cos(ang-0.42), Y(y1)-10*Math.sin(ang-0.42));
+      ctx.lineTo(X(x1)-10*Math.cos(ang+0.42), Y(y1)-10*Math.sin(ang+0.42));
+      ctx.closePath(); ctx.fill();
+    }
+    // ejes
+    ctx.strokeStyle=cssVar('--border'); ctx.lineWidth=1;
+    ctx.beginPath(); ctx.moveTo(X(-3),Y(0)); ctx.lineTo(X(4.2),Y(0)); ctx.moveTo(X(0),Y(-2)); ctx.lineTo(X(0),Y(3.4)); ctx.stroke();
+    // curvas de nivel x²+2y²=c
+    [0.75,1.5,3,5,7.5].forEach(c=>{
+      const on = Math.abs(c-3)<0.01;
+      ctx.strokeStyle= on? cssVar('--accent3') : cssVar('--muted');
+      ctx.globalAlpha= on? 0.95:0.35; ctx.lineWidth= on?1.8:1;
+      ctx.beginPath();
+      for(let i=0;i<=100;i++){ const t=i/100*2*Math.PI;
+        const ex=Math.sqrt(c)*Math.cos(t), ey=Math.sqrt(c/2)*Math.sin(t);
+        (i?ctx.lineTo:ctx.moveTo).call(ctx,X(ex),Y(ey)); }
+      ctx.stroke();
+    });
+    ctx.globalAlpha=1;
+    // vectores desde a=(1,1)
+    const gl=1.5, gux=GX/NG, guy=GY/NG;
+    arrow(1,1,1+gux*gl,1+guy*gl,cssVar('--accent2'),2.6);
+    const a=deg*Math.PI/180, ux=Math.cos(a), uy=Math.sin(a);
+    arrow(1,1,1+ux*1.05,1+uy*1.05,cssVar('--accent'),2.6);
+    ctx.fillStyle=cssVar('--txt'); ctx.beginPath(); ctx.arc(X(1),Y(1),4.5,0,7); ctx.fill();
+    ctx.fillStyle=cssVar('--accent2'); ctx.font='12px sans-serif';
+    ctx.fillText('∇f', X(1+gux*gl)+6, Y(1+guy*gl));
+    ctx.fillStyle=cssVar('--accent');
+    ctx.fillText('u', X(1+ux*1.05)+6, Y(1+uy*1.05)+4);
+    const D=GX*ux+GY*uy;
+    const estado = D>0.05? 'f SUBE en esa dirección' : (D<-0.05? 'f BAJA en esa dirección' : 'tangente al nivel: f no cambia');
+    readout.innerHTML='\\(\\nabla f(1,1)=(2,4)\\), \\(\\lVert\\nabla f\\rVert=\\sqrt{20}\\approx 4.47\\). Con \\(\\alpha='+deg+'^\\circ\\): \\(D_{\\vec u}f=\\nabla f\\cdot\\vec u='+D.toFixed(2)+'\\) → <b>'+estado+'</b>. Máximo \\(4.47\\) cuando \\(\\vec u\\parallel\\nabla f\\) (\\(\\alpha\\approx 63.4^\\circ\\)); cero cuando \\(\\vec u\\) es tangente a la elipse de nivel.';
+    typeset(readout);
+  }
+  requestAnimationFrame(draw); window.addEventListener('resize',()=>requestAnimationFrame(draw));
+};
+
+/* --- Módulo triples: el sólido esfera-cono en el semiplano (r,z) --- */
+WIDGETS['esfera-cono']=function(host){
+  whead(host,'El sólido estrella del examen','esfera x²+y²+z²=4z + cono z=√(x²+y²)');
+  const {cv,ctx,size}=setupCanvas(host,320);
+  const readout=el('div','readout'); host.appendChild(readout);
+  const ctr=ctrlRow(host);
+  let deg=25;
+  ctr.appendChild(rangeField('φ (°)',0,45,25,1,v=>{deg=v;draw();}).f);
+  function draw(){
+    const {w,h}=size(); ctx.clearRect(0,0,w,h);
+    const s=Math.min((w-70)/4.6,(h-50)/4.4), ox=44, oy=h-28;
+    const X=r=>ox+r*s, Y=z=>oy-z*s;
+    // región del sólido (corte): línea z=r hasta (2,2), luego arco de la esfera hasta (0,4)
+    ctx.fillStyle=cssVar('--accent'); ctx.globalAlpha=0.16;
+    ctx.beginPath(); ctx.moveTo(X(0),Y(0)); ctx.lineTo(X(2),Y(2));
+    for(let i=0;i<=60;i++){ const p=i/60*Math.PI/2; ctx.lineTo(X(2*Math.cos(p)),Y(2+2*Math.sin(p))); }
+    ctx.closePath(); ctx.fill(); ctx.globalAlpha=1;
+    // ejes
+    ctx.strokeStyle=cssVar('--border'); ctx.lineWidth=1;
+    ctx.beginPath(); ctx.moveTo(X(0),Y(0)); ctx.lineTo(X(4.4),Y(0)); ctx.moveTo(X(0),Y(0)); ctx.lineTo(X(0),Y(4.3)); ctx.stroke();
+    ctx.fillStyle=cssVar('--muted'); ctx.font='12px sans-serif';
+    ctx.fillText('r', X(4.4)-10, Y(0)+16); ctx.fillText('z', X(0)-16, Y(4.3)+10);
+    ctx.fillText('2', X(2)-3, Y(0)+16); ctx.fillText('4', X(0)-16, Y(4)+4); ctx.fillText('2', X(0)-16, Y(2)+4);
+    // esfera ρ=4cosφ  ⇔  r²+(z−2)²=4  (semicircunferencia r≥0)
+    ctx.strokeStyle=cssVar('--accent3'); ctx.lineWidth=2.2; ctx.beginPath();
+    for(let i=0;i<=90;i++){ const p=-Math.PI/2+i/90*Math.PI; const rr=2*Math.cos(p), zz=2+2*Math.sin(p);
+      (i?ctx.lineTo:ctx.moveTo).call(ctx,X(rr),Y(zz)); }
+    ctx.stroke();
+    // cono z=r  ⇔  φ=π/4
+    ctx.strokeStyle=cssVar('--accent2'); ctx.lineWidth=2.2;
+    ctx.beginPath(); ctx.moveTo(X(0),Y(0)); ctx.lineTo(X(2.7),Y(2.7)); ctx.stroke();
+    ctx.fillStyle=cssVar('--accent3'); ctx.fillText('ρ = 4cos φ', X(1.7), Y(3.9));
+    ctx.fillStyle=cssVar('--accent2'); ctx.fillText('φ = π/4 (cono)', X(2.15), Y(2.35));
+    // rayo a ángulo φ desde el eje z, hasta ρ=4cosφ
+    const phi=deg*Math.PI/180, rmax=4*Math.cos(phi);
+    const ex=rmax*Math.sin(phi), ez=rmax*Math.cos(phi);
+    ctx.strokeStyle=cssVar('--warn'); ctx.lineWidth=3;
+    ctx.beginPath(); ctx.moveTo(X(0),Y(0)); ctx.lineTo(X(ex),Y(ez)); ctx.stroke();
+    ctx.fillStyle=cssVar('--warn'); ctx.beginPath(); ctx.arc(X(ex),Y(ez),4.5,0,7); ctx.fill();
+    readout.innerHTML='Corte en el semiplano \\((r,z)\\). Con \\(\\varphi='+deg+'^\\circ\\), el rayo entra al sólido y sale en la esfera: \\(\\rho\\) recorre \\([0,\\ 4\\cos\\varphi]\\), aquí \\(\\rho_{\\max}='+rmax.toFixed(2)+'\\). Límites completos: \\(0\\le\\theta\\le 2\\pi\\), \\(0\\le\\varphi\\le\\pi/4\\), \\(0\\le\\rho\\le 4\\cos\\varphi\\) → \\(V=8\\pi\\).';
+    typeset(readout);
+  }
+  requestAnimationFrame(draw); window.addEventListener('resize',()=>requestAnimationFrame(draw));
+};
+
+/* ============================================================ chrome */
+$('#menuBtn').onclick=()=>{ $('#sidebar').classList.toggle('open'); $('#scrim').classList.toggle('open'); };
+function closeDrawer(){ $('#sidebar').classList.remove('open'); $('#scrim').classList.remove('open'); }
+$('#scrim').onclick=closeDrawer;
+function applyTheme(t){ document.documentElement.setAttribute('data-theme',t); $('#themeBtn').textContent= t==='light'?'☀️':'🌙'; $('meta[name=theme-color]').setAttribute('content', t==='light'?'#eef1f8':'#0f1220'); }
+let theme='dark'; try{ theme=localStorage.getItem(LS_THEME)||'dark'; }catch(e){}
+applyTheme(theme);
+$('#themeBtn').onclick=()=>{ theme=theme==='light'?'dark':'light'; applyTheme(theme); try{localStorage.setItem(LS_THEME,theme);}catch(e){} setTimeout(()=>{ if(window.__mjReady) typeset(contentEl); },30); };
+
+/* ============================================================ boot */
+if(!MODULES.length){
+  contentEl.innerHTML='<div class="card"><h2>⏳ Contenido en preparación</h2><p style="color:var(--muted)">Los datos de los módulos aún no se han inyectado en este archivo. Si ves esto, vuelve a generar el archivo final.</p></div>';
+} else {
+  renderNav(); renderModule();
+}
+</script>
+</body>
+</html>
